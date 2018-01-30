@@ -23,12 +23,13 @@ public class Zona {
 		 * @param yInicial columna inicial
 		 * @param yFinal fila final
 		 */
-		public Zona(String identificador,int xInicial,int xFinal, int yInicial, int yFinal) {
+		public Zona(String identificador,int xInicial,int xFinal, int yInicial, int yFinal,String estado) {
 			this.identificador = identificador;
 			this.xInicial = xInicial;
 			this.xFinal = xFinal;
 			this.yInicial = yInicial;
 			this.yFinal = yFinal;
+			this.estado = estado;
 		}
 		
 		/**

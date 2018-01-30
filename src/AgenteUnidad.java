@@ -1,10 +1,6 @@
-
-
-import AgenteUnidad.notificarEstado;
-import AgenteUnidad.respuestaInstancia;
-import AgenteUnidad.revisarPerimetro;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -19,7 +15,7 @@ public class AgenteUnidad extends Agent {
 		// Variable estado que contiene los 3 estados del agente "despejado", "encontrado" y "desactivado".
 		private String estado;
 
-	
+		private String coordenadas;
 		//Variables que guardan coordenadas de la bomba
 		private int bombaX;
 		private int bombaY;
@@ -77,51 +73,51 @@ public class AgenteUnidad extends Agent {
 		 * revisa en una matriz si existe un objeto dentro de las casillas,
 		 * cuando termine la evaluación procedera a notificar el estado.
 	 	 */
-		private class RecorrerZona extends CyclicBehaviour{
+		private class RecorrerZona extends OneShotBehaviour{
 			public void action() {
-				MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
-				ACLMessage msg = myAgent.receive(mt);
-				// Se verifica si el mensaje esta vacio.
-				if(msg != null) {
-						//Se decodifica el mensaje. en nombre de zona, x1,y1,x2,y2.
-						String coordenadas = msg.getContent();
-						String[] partes = coordenadas.split(",");
-						String zona = partes[0];
-						System.out.println(nombre+" recibe "+zona);
-						int xInicial = Integer.parseInt(partes[1]);
-						int yInicial = Integer.parseInt(partes[2]);
-						int xFinal = Integer.parseInt(partes[3]);
-						int yFinal = Integer.parseInt(partes[4]);
+				
+				//Se decodifica el mensaje. en nombre de zona, x1,y1,x2,y2.
+				String[] partes = coordenadas.split(",");
+				String zona = partes[0];
+				System.out.println(nombre+" recibe "+zona);
+				int xInicial = Integer.parseInt(partes[1]);
+				int yInicial = Integer.parseInt(partes[2]);
+				int xFinal = Integer.parseInt(partes[3]);
+				int yFinal = Integer.parseInt(partes[4]);
 
-						// Se inicia el estado como despejado.
-						estado = "despejado,"+zona;
-						for(int i = xInicial; i < xFinal ; i++) {
-							for(int j = yInicial; j < yFinal; j++) {
-								// En caso de encontrar un "1" dentro de la matriz, se cambia el estado a "encontrado" y se sale de inmediato.
-								doWait(500);
-								if(Mapa.getInstancia().getMapa()[j][i] == 1) {
-										estado = "encontrado,"+zona;
-										bombaX = i;
-										bombaY = j;
-										System.out.println("Agente "+nombre+" reviso la "+zona + " ("+i+","+j+") y encontro la bomba");
-										
-										break;
-								}
-							}
-							if(estado.equalsIgnoreCase("encontrado")) {
-								break;
-							}
+				// Se inicia el estado como despejado.
+				estado = "despejado,"+zona;
+				for(int i = xInicial; i < xFinal ; i++) {
+					for(int j = yInicial; j < yFinal; j++) {
+						// En caso de encontrar un "1" dentro de la matriz, se cambia el estado a "encontrado" y se sale de inmediato.
+						doWait(500);
+						if(Mision.getInstancia().getMapa().getMapa()[j][i] == 1) {
+							estado = "encontrado,"+zona;
+							bombaX = i;
+							bombaY = j;
+							System.out.println("Agente "+nombre+" reviso la "+zona + " ("+i+","+j+") y encontro la bomba");	
+							break;
 						}
-						//Se notifica al Lider de que se encontro la bomba.
-						ACLMessage respuesta = msg.createReply();
-						respuesta.setPerformative(ACLMessage.INFORM);
-						respuesta.setContent(estado);
-						myAgent.send(respuesta);
-						System.out.println(nombre + " notifica que la zona estaba " + estado);
-						//addBehaviour(new notificarEstado());
-				}else {
-					block();
+					}
+					if(estado.equalsIgnoreCase("encontrado")) {
+						break;
+					}
 				}
+				if(estado.equalsIgnoreCase("encontrado")) {
+					for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
+						if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador().equalsIgnoreCase(zona)){
+							Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("encontrado");
+						}
+					}
+				} else {
+					for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
+						if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador().equalsIgnoreCase(zona)){
+							Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("despejado");
+						}
+					}
+				}
+				System.out.println(nombre + " notifica que la zona estaba " + estado);
+				//addBehaviour(new notificarEstado());
 			}
 		}
 		
@@ -131,10 +127,9 @@ public class AgenteUnidad extends Agent {
 				ACLMessage msg = myAgent.receive(mt);
 				// Se verifica si el mensaje esta vacio.
 				if(msg != null) {
-					//addBehaviour(new RecorrerZona());
-				// Si el mensaje es distinto de null se recorre la zona enviada por el lider
+					coordenadas = msg.getContent();
+					addBehaviour(new RecorrerZona());
 				}else {
-					// Si no se empieza a recorrer la lista de zonas
 					block();
 				}
 			}
