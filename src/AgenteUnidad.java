@@ -1,3 +1,4 @@
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
@@ -151,6 +152,33 @@ public class AgenteUnidad extends Agent {
 				}
 				
 			}
+		}
+		
+		private class notificarUnidades extends OneShotBehaviour{
+
+			public void action() {
+				//Busca en el DF a traves del tipo "unidad-swat" a todos los agentes que presten este servicio
+				DFAgentDescription template = new DFAgentDescription();
+				ServiceDescription sd = new ServiceDescription();
+				sd.setType("unidad-swat");
+				template.addServices(sd);
+				
+				try {
+					//Se agregan los DFservices encontrados al arreglo result.
+					DFAgentDescription[] result = DFService.search(myAgent, template);
+					int contUnidades = result.length;
+					System.out.println("Se encontraron " + contUnidades + " agentes");
+					//AID listaUnidades [] = new AID[result.length];
+					//Se agregan los AID al arreglo listaUnidades.
+					for(int i = 0; i < result.length ; i++) {
+						//Hacer algo aqui para notificar
+						//listaUnidades[i] = result[i].getName();
+					}
+				} catch (FIPAException e) {
+					e.printStackTrace();
+				}				
+			}
+			
 		}
 		
 		/**
