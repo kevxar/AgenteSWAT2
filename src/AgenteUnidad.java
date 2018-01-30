@@ -99,6 +99,10 @@ public class AgenteUnidad extends Agent {
 							System.out.println("Agente "+nombre+" reviso la "+zona + " ("+i+","+j+") y encontro la bomba");	
 							break;
 						}
+						if(Mision.getInstancia().getEstado() == true) {
+							addBehaviour(new notificacionBomba());
+							break;
+						}
 					}
 					if(estado.equalsIgnoreCase("encontrado")) {
 						break;
@@ -150,12 +154,11 @@ public class AgenteUnidad extends Agent {
 				if(zonaDisponibles < Mision.getInstancia().getMapa().getListaCoordenadas().length) {
 					addBehaviour(new RecorrerZona());
 				}
-				
 			}
 		}
 		
 		private class notificarUnidades extends OneShotBehaviour{
-
+			DFAgentDescription[] result;
 			public void action() {
 				//Busca en el DF a traves del tipo "unidad-swat" a todos los agentes que presten este servicio
 				DFAgentDescription template = new DFAgentDescription();
@@ -164,21 +167,55 @@ public class AgenteUnidad extends Agent {
 				template.addServices(sd);
 				
 				try {
-					//Se agregan los DFservices encontrados al arreglo result.
-					DFAgentDescription[] result = DFService.search(myAgent, template);
-					int contUnidades = result.length;
-					System.out.println("Se encontraron " + contUnidades + " agentes");
-					//AID listaUnidades [] = new AID[result.length];
-					//Se agregan los AID al arreglo listaUnidades.
-					for(int i = 0; i < result.length ; i++) {
-						//Hacer algo aqui para notificar
-						//listaUnidades[i] = result[i].getName();
-					}
+					result = DFService.search(myAgent, template);
 				} catch (FIPAException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}				
+				}
+			
+				int contUnidades = result.length;
+				ACLMessage req = new ACLMessage(ACLMessage.INFORM);
+				for (int i = 1; i <= contUnidades; ++i) {
+					//Agrego la unidad a la lista de unidades
+					req.addReceiver(result[i].getName());
+				}
+				//Seteo el contenido del mensaje con la zona 
+				req.setContent(coordenadas);
+					
+				//Se ajustan algunas propiedades del mensaje
+				req.setConversationId("envio-zona");
+				req.setReplyWith("request"+System.currentTimeMillis()); // Valor unico
+				
+				//Se envia el mensaje	
+				myAgent.send(req);
 			}
 			
+		}
+		
+		private class notificacionBomba extends CyclicBehaviour{
+			public void action() {
+				MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+				ACLMessage msg = myAgent.receive(mt);
+				// Se verifica si el mensaje esta vacio.
+				if(msg != null) {
+					addBehaviour(new desactivarBomba());
+				}else {
+					block();
+				}
+			}
+		}
+		
+		private class desactivarBomba extends OneShotBehaviour{
+			public void action() {
+				//Envia un mensaje al lider.
+				ACLMessage req = new ACLMessage(ACLMessage.INFORM);
+				req.setContent("Bomba");
+				req.addReceiver(new AID ("Baldo",AID.ISLOCALNAME));
+				req.setConversationId("iniciacion");
+				req.setReplyWith("si");
+				myAgent.send(req);
+				doDelete();
+			}
 		}
 		
 		/**

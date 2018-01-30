@@ -7,6 +7,10 @@ public class Mision {
 	// Objetivo que contiene la descripcion
 	private Objetivo objetivo;
 	
+
+
+	private boolean estado;
+	
 	// Instancia de la clase Mapa
 	private static Mision instancia = null;
 	
@@ -82,4 +86,12 @@ public class Mision {
 		return this.objetivo;
 	}
 	
+	public boolean getEstado() {
+		return estado;
+	}
+
+
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+	}
 }
