@@ -118,6 +118,7 @@ public class AgenteUnidad extends Agent {
 				}
 				System.out.println(nombre + " notifica que la zona estaba " + estado);
 				//addBehaviour(new notificarEstado());
+				addBehaviour(new buscarNuevaZona());
 			}
 		}
 		
@@ -132,6 +133,23 @@ public class AgenteUnidad extends Agent {
 				}else {
 					block();
 				}
+			}
+		}
+		
+		private class buscarNuevaZona extends OneShotBehaviour{
+			int zonaDisponibles = 0;
+			public void action() {
+				for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
+					if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getEstado().equalsIgnoreCase("libre")) {
+						coordenadas = Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXInicial()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYInicial()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXFinal()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYFinal();
+						break;
+					}
+					zonaDisponibles++;
+				}
+				if(zonaDisponibles < Mision.getInstancia().getMapa().getListaCoordenadas().length) {
+					addBehaviour(new RecorrerZona());
+				}
+				
 			}
 		}
 		
