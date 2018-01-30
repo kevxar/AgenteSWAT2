@@ -170,7 +170,7 @@ public class AgenteLider extends Agent {
 				//Se envia el mensaje
 				myAgent.send(req);
 			}
-			//addBehaviour(new EsperarReporte());
+			addBehaviour(new EsperarReporte());
 		}		
 	}
 	

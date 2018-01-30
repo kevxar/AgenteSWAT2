@@ -97,6 +97,7 @@ public class AgenteUnidad extends Agent {
 							bombaX = i;
 							bombaY = j;
 							System.out.println("Agente "+nombre+" reviso la "+zona + " ("+i+","+j+") y encontro la bomba");	
+							addBehaviour(new notificarUnidades());
 							break;
 						}
 						if(Mision.getInstancia().getEstado() == true) {
@@ -129,11 +130,13 @@ public class AgenteUnidad extends Agent {
 		
 		private class ObtenerZona extends CyclicBehaviour{
 			public void action() {
+				
 				MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
 				ACLMessage msg = myAgent.receive(mt);
 				// Se verifica si el mensaje esta vacio.
 				if(msg != null) {
 					coordenadas = msg.getContent();
+					System.out.println("He obtenido las coordenadas!");
 					addBehaviour(new RecorrerZona());
 				}else {
 					block();
