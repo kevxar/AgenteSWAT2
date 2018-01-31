@@ -43,7 +43,7 @@ public class AgenteUnidad extends Agent {
 			addBehaviour(new respuestaInstancia());
 			//Se da paso al comportamiento que espera el perimetro a revisar
 			addBehaviour(new ObtenerZona());
-		
+			addBehaviour(new notificacionBomba());
 		}
 		
 		/**
@@ -85,7 +85,7 @@ public class AgenteUnidad extends Agent {
 				int yInicial = Integer.parseInt(partes[2]);
 				int xFinal = Integer.parseInt(partes[3]);
 				int yFinal = Integer.parseInt(partes[4]);
-
+				
 				// Se inicia el estado como despejado.
 				estado = "despejado,"+zona;
 				for(int i = xInicial; i < xFinal ; i++) {
@@ -105,11 +105,11 @@ public class AgenteUnidad extends Agent {
 							break;
 						}
 					}
-					if(estado.equalsIgnoreCase("encontrado")) {
+					if(estado.equalsIgnoreCase("encontrado"+zona)) {
 						break;
 					}
 				}
-				if(estado.equalsIgnoreCase("encontrado")) {
+				if(estado.equalsIgnoreCase("encontrado"+zona)) {
 					for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
 						if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador().equalsIgnoreCase(zona)){
 							Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("encontrado");
@@ -145,18 +145,23 @@ public class AgenteUnidad extends Agent {
 		}
 		
 		private class buscarNuevaZona extends OneShotBehaviour{
-			int zonaDisponibles = 0;
+			//int zonaDisponibles = 0;
 			public void action() {
+				System.out.println("Buscando nueva zona el "+nombre);
 				for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
 					if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getEstado().equalsIgnoreCase("libre")) {
+						Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("ocupado");
 						coordenadas = Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXInicial()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYInicial()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXFinal()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYFinal();
+						System.out.println("yo el "+nombre+"Tengo la zona "+coordenadas);
+						addBehaviour(new RecorrerZona());
 						break;
 					}
-					zonaDisponibles++;
+					//zonaDisponibles++;
 				}
-				if(zonaDisponibles < Mision.getInstancia().getMapa().getListaCoordenadas().length) {
-					addBehaviour(new RecorrerZona());
-				}
+				//if(zonaDisponibles < Mision.getInstancia().getMapa().getListaCoordenadas().length) {
+					//System.out.println("Tengo la zona "+coordenadas);
+					
+			//	}
 			}
 		}
 		
@@ -178,7 +183,7 @@ public class AgenteUnidad extends Agent {
 			
 				int contUnidades = result.length;
 				ACLMessage req = new ACLMessage(ACLMessage.INFORM);
-				for (int i = 1; i <= contUnidades; ++i) {
+				for (int i = 0; i < contUnidades; ++i) {
 					//Agrego la unidad a la lista de unidades
 					req.addReceiver(result[i].getName());
 				}
@@ -212,7 +217,7 @@ public class AgenteUnidad extends Agent {
 			public void action() {
 				//Envia un mensaje al lider.
 				ACLMessage req = new ACLMessage(ACLMessage.INFORM);
-				req.setContent("Bomba");
+				req.setContent("desactivado");
 				req.addReceiver(new AID ("Baldo",AID.ISLOCALNAME));
 				req.setConversationId("iniciacion");
 				req.setReplyWith("si");

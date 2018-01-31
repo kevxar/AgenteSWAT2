@@ -166,7 +166,7 @@ public class AgenteLider extends Agent {
 				//Se ajustan algunas propiedades del mensaje
 				req.setConversationId("envio-zona");
 				req.setReplyWith("request"+System.currentTimeMillis()); // Valor unico
-				
+				Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("ocupado");
 				//Se envia el mensaje
 				myAgent.send(req);
 			}
@@ -184,6 +184,7 @@ public class AgenteLider extends Agent {
 			//Si se recibio respuesta, dependiendo de la respuesta entregada, se reportara la mision
 			ACLMessage respuesta = myAgent.receive(mt);
 			if(respuesta!=null) {
+				System.out.println("Me llego una notificacion.");
 				String estado = respuesta.getContent();
 				if(estado.equals("desactivado")) {
 					contador++;

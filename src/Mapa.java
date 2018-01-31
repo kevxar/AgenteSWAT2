@@ -68,7 +68,7 @@ public class Mapa {
 			int cantidadHabitacionesTotales = 1;
 			
 			// Se crea la primera zona inicial y se agrega a la cola
-			Zona zona = new Zona("0",0,columnas,0,filas,"disponible");
+			Zona zona = new Zona("0",0,columnas,0,filas,"libre");
 			cola.add(zona);
 			
 			// Variable para la condicion de la division de las zonas por fila y columna
@@ -96,12 +96,12 @@ public class Mapa {
 							zona2.getZonaXInicial(),
 							zona2.getZonaXFinal()-mitad,
 							zona2.getZonaYInicial(),
-							zona2.getZonaYFinal(),"disponible");
+							zona2.getZonaYFinal(),"libre");
 					Zona Aux2 = new Zona("0",
 							zona2.getZonaXInicial()+mitad+arr,
 							zona2.getZonaXFinal(),
 							zona2.getZonaYInicial(),
-							zona2.getZonaYFinal(),"disponible");
+							zona2.getZonaYFinal(),"libre");
 					
 					//Condicion para que la divisiones en cada zona sea equitativo con respecto a la fila y columna 
 					if(pos>=fina) {
@@ -133,12 +133,12 @@ public class Mapa {
 							zona2.getZonaXInicial(),
 							zona2.getZonaXFinal(),
 							zona2.getZonaYInicial(),
-							zona2.getZonaYFinal()-mitad,"disponible");
+							zona2.getZonaYFinal()-mitad,"libre");
 					Zona Aux2 = new Zona("0",
 							zona2.getZonaXInicial(),
 							zona2.getZonaXFinal(),
 							zona2.getZonaYInicial()+mitad+arr,
-							zona2.getZonaYFinal(),"disponible");
+							zona2.getZonaYFinal(),"libre");
 					
 					//Condicion para que la divisiones en cada zona sea equitativo con respecto a la fila y columna 
 					if(pos>=fina) {
