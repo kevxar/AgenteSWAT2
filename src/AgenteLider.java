@@ -18,7 +18,7 @@ public class AgenteLider extends Agent {
 	private AID[] listaUnidades;
 	// Arreglo de zonas
 	private Zona[] listaCoordenadas;
-	// 
+	// Variable global del Agente Lider que indica la cantidad de Unidades que tiene a su mando
 	private int cantidadUnidad;
 	/**
 	 * Setup que inicializa el agente Lider.
@@ -36,6 +36,7 @@ public class AgenteLider extends Agent {
 	private class ObtenerMapa extends OneShotBehaviour{
 
 		public void action() {
+			// Se obtiene la mision por la instancia
 			mision = Mision.getInstancia();	
 			listaCoordenadas = mision.getMapa().getListaCoordenadas();
 			System.out.println("He obtenido la misión!");
@@ -51,15 +52,16 @@ public class AgenteLider extends Agent {
 				System.out.print(" y final: "+ mision.getMapa().getListaCoordenadas()[i].getZonaYFinal()+"  ");
 				System.out.println("");
 			}
-				
+			// Inicia el comportamiento de reclutar las unidades
 			addBehaviour(new ReclutarUnidades());
 		}	
 	}
 	
 	/**
-	 * Metodo que instancia AgenteUnidad dependiendo de la cantidad de zonas que tiene el mapa.
-	 * Luego,recluta a las unidades a traves del DF.
-	 * Metodo ocupa un Switch el cual se repite hasta avanzar al otro paso.
+	 * Metodo que tiene un switch de 3 pasos:
+	 * 1.- instancia AgenteUnidad dependiendo de la cantidad de zonas que tiene el mapa, osea por cada 10 zonas hay 5 agentes más.
+	 * 2.- Luego,recluta a las unidades a traves del DF.
+	 * 3.- Se buscan a todos los agente disponible para tener la lista de unidades.
 	 */
 	private class ReclutarUnidades extends Behaviour{
 		private int cont = 0;
@@ -68,9 +70,11 @@ public class AgenteLider extends Agent {
 		public void action() {
 			switch (paso) {
 			case 0:
+				// Si hay menor que 6, la cantidad de agente dependera de la cantidad de zonas.
 				if(listaCoordenadas.length<5) {
 					cantidadUnidad = listaCoordenadas.length;
 				} else {
+					// En caso contrario se dejara como base 5 unidades, y por cada 10 zonas hay 5 unidades más.
 					cantidadUnidad = 5 + ((int)(listaCoordenadas.length/10))*5;
 				}
 				for(int j = 0;j<cantidadUnidad;j++) {			
@@ -141,7 +145,7 @@ public class AgenteLider extends Agent {
 	/**
 	 * Metodo que esta encargado de dar las coordenadas de cada zona a cada agente.
 	 * Se las envia a traves de un mensaje con performative REQUEST.
-	 * Luego le da paso al comportamiento de ReunirUnidad.
+	 * Luego le da paso al comportamiento de Esperar Reporte.
 	 */
 	private class EnviarZonas extends OneShotBehaviour {
 		private MessageTemplate mt; 
@@ -174,7 +178,11 @@ public class AgenteLider extends Agent {
 		}		
 	}
 	
-	
+	/**
+	 * Comportamiento que espera los informes de cada agente,
+	 * Cuando lleguen todos los informes, se procedera a Reportar la Mision
+	 *
+	 */
 	private class EsperarReporte extends CyclicBehaviour {
 		int contador = 0;	
 		public void action() {
