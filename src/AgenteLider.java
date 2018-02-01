@@ -192,7 +192,7 @@ public class AgenteLider extends Agent {
 			//Si se recibio respuesta, dependiendo de la respuesta entregada, se reportara la mision
 			ACLMessage respuesta = myAgent.receive(mt);
 			if(respuesta!=null) {
-				//System.out.println("Me llego una notificacion.");
+				System.out.println("Me llego una notificacion.");
 				String estado = respuesta.getContent();
 				if(estado.equals("desactivado")) {
 					contador++;

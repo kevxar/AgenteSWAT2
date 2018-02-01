@@ -42,8 +42,7 @@ public class Controlador {
 		Properties pp = new Properties();
 	    pp.setProperty(Profile.GUI, Boolean.TRUE.toString());
 	    Profile p = new ProfileImpl(pp);
-		//Contenedor de agentes.
-	    AgentContainer ac = jade.core.Runtime.instance().createMainContainer(p);
+		AgentContainer ac = jade.core.Runtime.instance().createMainContainer(p);
 		
 	    try {
 	        ac.acceptNewAgent("Baldo", new AgenteLider()).start();

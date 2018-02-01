@@ -1,10 +1,10 @@
 
 
 public class Zona {
-		// Variable que identifica la zona, la cual se denomina como zonaID
+		// Variable que identifica la zona
 		private String identificador;
 		
-		//Variable que guarda el estado de la zona, los valores pueden ser libre, ocupado, despejado y encontrado.
+		//Variable que guarda el estado de la zona, los valores pueden ser disponible, ocupado,despejado y encontrado.
 		private String estado;
 		
 		// Posiciones inicial y final de las filas
