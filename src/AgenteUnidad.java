@@ -91,7 +91,7 @@ public class AgenteUnidad extends Agent {
 				for(int i = xInicial; i < xFinal ; i++) {
 					for(int j = yInicial; j < yFinal; j++) {
 						// En caso de encontrar un "1" dentro de la matriz, se cambia el estado a "encontrado" y se sale de inmediato.
-						doWait(500);
+						//doWait(100);
 						if(Mision.getInstancia().getMapa().getMapa()[j][i] == 1) {
 							estado = "encontrado,"+zona;
 							bombaX = i;
@@ -136,7 +136,7 @@ public class AgenteUnidad extends Agent {
 				// Se verifica si el mensaje esta vacio.
 				if(msg != null) {
 					coordenadas = msg.getContent();
-					System.out.println("He obtenido las coordenadas!");
+					//System.out.println("He obtenido las coordenadas!");
 					addBehaviour(new RecorrerZona());
 				}else {
 					block();
@@ -147,12 +147,12 @@ public class AgenteUnidad extends Agent {
 		private class buscarNuevaZona extends OneShotBehaviour{
 			//int zonaDisponibles = 0;
 			public void action() {
-				System.out.println("Buscando nueva zona el "+nombre);
+				//System.out.println("Buscando nueva zona el "+nombre);
 				for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
 					if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getEstado().equalsIgnoreCase("libre")) {
 						Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("ocupado");
 						coordenadas = Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXInicial()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYInicial()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXFinal()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYFinal();
-						System.out.println("yo el "+nombre+"Tengo la zona "+coordenadas);
+						//System.out.println("yo el "+nombre+"Tengo la zona "+coordenadas);
 						addBehaviour(new RecorrerZona());
 						break;
 					}
