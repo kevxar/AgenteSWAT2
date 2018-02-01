@@ -1,31 +1,32 @@
-
+/**
+ * @author Baldo Morales
+ * @author Kevin Araya
+ * @author Joaquin Solano
+ */
 
 public class Mision {
-	// Unico Mapa que contiene la matriz donde se ubica la bomba
+	//  Mapa que contiene la matriz donde se ubica la bomba
 	private Mapa mapa;
 	
 	// Objetivo que contiene la descripcion
 	private Objetivo objetivo;
 	
-
-
+	//Booleano que tiene el estado de la bomba, si es true, la bomba ya fue encontrada en alguna zona del mapa
 	private boolean estado;
 	
-	// Instancia de la clase Mapa
+	// Instancia de la clase Mision
 	private static Mision instancia = null;
 	
 	/**
 	 * Constructor vacio de la clase Mision
 	 */
-	
 	private Mision() {
 		//Constructor vacio
 	}
 	
-	
 	/**
-	 * Sincroniza el mapa instanciado cuando lo llaman
-	 * @return instancia que es el mapa sincronizado
+	 * Sincroniza la mision instanciada cuando lo llaman
+	 * @return instancia que es la mision sincronizada
 	 */
 	public synchronized static Mision getInstancia() {
         if (instancia == null) {            
@@ -71,8 +72,8 @@ public class Mision {
 	}
 	
 	/**
-	 * Metodo para obtener el mapa instanciado
-	 * @return mapa instanciada
+	 * Metodo para obtener el mapa
+	 * @return mapa
 	 */
 	public Mapa getMapa() {
 		return this.mapa;
@@ -86,11 +87,18 @@ public class Mision {
 		return this.objetivo;
 	}
 	
+	/**
+	 * Metodo que obtiene el valor de estado
+	 * @return
+	 */
 	public boolean getEstado() {
 		return estado;
 	}
 
-
+	/**
+	 * Metodo que modifica el valor de estado
+	 * @param estado
+	 */
 	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}

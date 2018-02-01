@@ -1,10 +1,15 @@
 
+/**
+ * @author Baldo Morales
+ * @author Kevin Araya
+ * @author Joaquin Solano
+ */
 
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class Mapa {
-	// Variable Filas que especifica el largo del Mapa
+	    // Variable Filas que especifica el largo del Mapa
 		private int filas;
 		
 		// Variable Columnas que especifica el ancho del Mapa

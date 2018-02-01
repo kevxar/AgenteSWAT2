@@ -1,4 +1,9 @@
 
+/**
+ * @author Baldo Morales
+ * @author Kevin Araya
+ * @author Joaquin Solano
+ */
 
 public class Objetivo {
 		// Variable que dice el tipo de objetivo

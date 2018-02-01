@@ -8,6 +8,11 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+/**
+ * @author Baldo Morales
+ * @author Kevin Araya
+ * @author Joaquin Solano
+ */
 
 public class AgenteUnidad extends Agent {
 	// Variable nombre que contiene el nombre del agente.

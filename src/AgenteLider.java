@@ -10,6 +10,11 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+/**
+ * @author Baldo Morales
+ * @author Kevin Araya
+ * @author Joaquin Solano
+ */
 
 public class AgenteLider extends Agent {
 	// Mision para el equipo, contiene mapa y objetivo
@@ -141,7 +146,6 @@ public class AgenteLider extends Agent {
 		}
 	}
 	
-	
 	/**
 	 * Metodo que esta encargado de dar las coordenadas de cada zona a cada agente.
 	 * Se las envia a traves de un mensaje con performative REQUEST.
@@ -210,8 +214,6 @@ public class AgenteLider extends Agent {
 		
 	}
 	
-	
-	
 	/**
 	 * Metodo que reporta el estado final de la mision y termina con la vida del lider.
 	 *
@@ -223,7 +225,6 @@ public class AgenteLider extends Agent {
 			JOptionPane.showMessageDialog(null,"¡La misión ha terminado!");
 			doDelete();
 		}
-
 	}
 	
 	/**
