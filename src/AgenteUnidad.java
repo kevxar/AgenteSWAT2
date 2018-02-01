@@ -68,6 +68,7 @@ public class AgenteUnidad extends Agent {
 				block();
 			}
 		}
+<<<<<<< HEAD
 	}
 
 
@@ -102,6 +103,46 @@ public class AgenteUnidad extends Agent {
 						System.out.println("Agente "+nombre+" reviso la "+zona + " ("+i+","+j+") y encontro la bomba");	
 						addBehaviour(new notificarUnidades());
 						break;
+=======
+		
+		
+		/**
+		 * Clase Revisar Perimetro que es un comportamiento
+		 * ciclico que espera una solicitud del lider,
+		 * revisa en una matriz si existe un objeto dentro de las casillas,
+		 * cuando termine la evaluación procedera a notificar el estado.
+	 	 */
+		private class RecorrerZona extends OneShotBehaviour{
+			public void action() {
+				
+				//Se decodifica el mensaje. en nombre de zona, x1,y1,x2,y2.
+				String[] partes = coordenadas.split(",");
+				String zona = partes[0];
+				System.out.println(nombre+" recibe "+zona);
+				int xInicial = Integer.parseInt(partes[1]);
+				int yInicial = Integer.parseInt(partes[2]);
+				int xFinal = Integer.parseInt(partes[3]);
+				int yFinal = Integer.parseInt(partes[4]);
+				
+				// Se inicia el estado como despejado.
+				estado = "despejado,"+zona;
+				for(int i = xInicial; i < xFinal ; i++) {
+					for(int j = yInicial; j < yFinal; j++) {
+						// En caso de encontrar un "1" dentro de la matriz, se cambia el estado a "encontrado" y se sale de inmediato.
+						//doWait(100);
+						if(Mision.getInstancia().getMapa().getMapa()[j][i] == 1) {
+							estado = "encontrado,"+zona;
+							bombaX = i;
+							bombaY = j;
+							System.out.println("Agente "+nombre+" reviso la "+zona + " ("+i+","+j+") y encontro la bomba");	
+							addBehaviour(new notificarUnidades());
+							break;
+						}
+						if(Mision.getInstancia().getEstado() == true) {
+							addBehaviour(new notificacionBomba());
+							break;
+						}
+>>>>>>> 4f0f485a01d6e037d1e956f7f8db7b106b8fdcfc
 					}
 					if(Mision.getInstancia().getEstado() == true) {
 						addBehaviour(new notificacionBomba());
@@ -112,6 +153,7 @@ public class AgenteUnidad extends Agent {
 					break;
 				}
 			}
+<<<<<<< HEAD
 			// En cado de encontrar o no encontrar la bomba, se cambiara el estado de la zona misma a "encontrado" o "despejado".
 			if(estado.equalsIgnoreCase("encontrado"+zona)) {
 				for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
@@ -123,6 +165,37 @@ public class AgenteUnidad extends Agent {
 				for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
 					if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador().equalsIgnoreCase(zona)){
 						Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("despejado");
+=======
+		}
+		
+		private class ObtenerZona extends CyclicBehaviour{
+			public void action() {
+				
+				MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
+				ACLMessage msg = myAgent.receive(mt);
+				// Se verifica si el mensaje esta vacio.
+				if(msg != null) {
+					coordenadas = msg.getContent();
+					//System.out.println("He obtenido las coordenadas!");
+					addBehaviour(new RecorrerZona());
+				}else {
+					block();
+				}
+			}
+		}
+		
+		private class buscarNuevaZona extends OneShotBehaviour{
+			//int zonaDisponibles = 0;
+			public void action() {
+				//System.out.println("Buscando nueva zona el "+nombre);
+				for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
+					if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getEstado().equalsIgnoreCase("libre")) {
+						Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("ocupado");
+						coordenadas = Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXInicial()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYInicial()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXFinal()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYFinal();
+						//System.out.println("yo el "+nombre+"Tengo la zona "+coordenadas);
+						addBehaviour(new RecorrerZona());
+						break;
+>>>>>>> 4f0f485a01d6e037d1e956f7f8db7b106b8fdcfc
 					}
 				}
 			}
