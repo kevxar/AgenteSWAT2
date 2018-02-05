@@ -51,7 +51,7 @@ public class AgenteUnidad extends Agent {
 		//Se da paso al comportamiento que espera el perimetro a revisar
 		addBehaviour(new ObtenerZona());
 		// Se inicia el comportamiento de que las unidades esperan a que otra unidad reporte si encontro la bomba.
-		addBehaviour(new notificacionBomba());
+		//addBehaviour(new esperarNotificacion());
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class AgenteUnidad extends Agent {
 			ACLMessage msg = myAgent.receive(mt);
 			if(msg!=null) {
 				ACLMessage respuesta = msg.createReply();
-				respuesta.setPerformative(ACLMessage.CONFIRM);
+				respuesta.setPerformative(ACLMessage.AGREE);
 				respuesta.setContent("si");			
 				myAgent.send(respuesta);
 			}else {
@@ -74,7 +74,6 @@ public class AgenteUnidad extends Agent {
 			}
 		}
 	}
-
 
 	/**
 	 * Clase Recorrer Zona que es un comportamiento
@@ -99,19 +98,23 @@ public class AgenteUnidad extends Agent {
 			for(int i = xInicial; i < xFinal ; i++) {
 				for(int j = yInicial; j < yFinal; j++) {
 					// En caso de encontrar un "1" dentro de la matriz, se cambia el estado a "encontrado" y se sale de inmediato.
-					doWait(500);
-					if(Mision.getInstancia().getMapa().getMapa()[j][i] == 1) {
-						estado = "encontrado,"+zona;
-						bombaX = i;
-						bombaY = j;
-						System.out.println("Agente "+nombre+" reviso la "+zona + " ("+i+","+j+") y encontro la bomba");	
-						addBehaviour(new notificarUnidades());
+					//doWait(100);
+					
+					if(!Mision.getInstancia().getEstado()) {
+						if(Mision.getInstancia().getMapa().getMapa()[j][i] == 1) {
+							estado = "encontrado,"+zona;
+							bombaX = i;
+							bombaY = j;
+							Mision.getInstancia().setEstado(true);
+							System.out.println("Agente "+nombre+" reviso la "+zona + " ("+i+","+j+") y encontro la bomba");	
+							addBehaviour(new notificarUnidades());
+							break;
+						}
+					}else {
+						addBehaviour(new esperarNotificacion());
 						break;
 					}
-					if(Mision.getInstancia().getEstado() == true) {
-						addBehaviour(new notificacionBomba());
-						break;
-					}
+					
 				}
 				if(estado.equalsIgnoreCase("encontrado"+zona)) {
 					break;
@@ -132,7 +135,11 @@ public class AgenteUnidad extends Agent {
 				}
 			}
 			System.out.println(nombre + " notifica que la zona estaba " + estado);
-			addBehaviour(new buscarNuevaZona());
+			if(!Mision.getInstancia().getEstado()) {
+				addBehaviour(new buscarNuevaZona());
+			}else {
+				addBehaviour(new esperarNotificacion());
+			}
 		}
 	}
 	
@@ -165,7 +172,7 @@ public class AgenteUnidad extends Agent {
 	 */
 	private class buscarNuevaZona extends OneShotBehaviour{
 		public void action() {
-			System.out.println("Buscando nueva zona el "+nombre);
+			System.out.println(nombre+ " Buscando nueva zona");
 			for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
 				// Si la zona de la lista esta libre se procede a recorrer la zona.
 				if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getEstado().equalsIgnoreCase("libre")) {
@@ -226,7 +233,7 @@ public class AgenteUnidad extends Agent {
 	 * proceder a desactivar la bomba en dicha zona.
 	 *
 	 */
-	private class notificacionBomba extends CyclicBehaviour{
+	private class esperarNotificacion extends CyclicBehaviour{
 		public void action() {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
 			ACLMessage msg = myAgent.receive(mt);

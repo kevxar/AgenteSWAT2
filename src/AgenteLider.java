@@ -25,12 +25,13 @@ public class AgenteLider extends Agent {
 	private Zona[] listaCoordenadas;
 	// Variable global del Agente Lider que indica la cantidad de Unidades que tiene a su mando
 	private int cantidadUnidad;
+	
 	/**
 	 * Setup que inicializa el agente Lider.
 	 */
 	protected void setup() {
 		System.out.println("Hola, soy el lider");
-		addBehaviour(new ObtenerMapa());
+		addBehaviour(new ObtenerMision());
 	}
 
 	/**
@@ -38,7 +39,7 @@ public class AgenteLider extends Agent {
 	 * Luego, imprime las coordenadas de cada Zona.
 	 * @param mis
 	 */
-	private class ObtenerMapa extends OneShotBehaviour{
+	private class ObtenerMision extends OneShotBehaviour{
 
 		public void action() {
 			// Se obtiene la mision por la instancia
@@ -92,7 +93,7 @@ public class AgenteLider extends Agent {
 				paso = 1;
 				break;
 			case 1:
-				MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CONFIRM);
+				MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.AGREE);
 				if(!respondio) {
 					//Envia un mensaje a las unidades recien creadas.
 					ACLMessage req = new ACLMessage(ACLMessage.CONFIRM);
@@ -196,7 +197,7 @@ public class AgenteLider extends Agent {
 			//Si se recibio respuesta, dependiendo de la respuesta entregada, se reportara la mision
 			ACLMessage respuesta = myAgent.receive(mt);
 			if(respuesta!=null) {
-				System.out.println("Me llego una notificacion.");
+				System.out.println("Me llego una notificacion de " + respuesta.getSender().getLocalName());
 				String estado = respuesta.getContent();
 				if(estado.equals("desactivado")) {
 					contador++;
