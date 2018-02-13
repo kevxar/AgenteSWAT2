@@ -24,14 +24,25 @@ public class AgenteUnidad extends Agent {
 	// Variable coordenadas, que guarda el nombre, el punto inicial, y final de las zonas a revisar.
 	private String coordenadas;
 	
-	//Variables que guardan coordenadas de la bomba
-	private int bombaX;
-	private int bombaY;
-
+	private int contadorRespuestaMensajes;
+	private int contadorMensajesServicios;
+	private int contMensajesRecibidos;
+	private int sumEnv;
+	private int contEnv;
+	private int contCamb;
+	private int contRef;
+	
 	/**
 	 * Setup que inicializa el agente Unidad.
 	 */
 	protected void setup() {
+		contadorRespuestaMensajes = 0;
+		contMensajesRecibidos = 0;
+		contadorMensajesServicios = 0;
+		sumEnv=0;
+		contEnv=0;
+		contCamb=0;
+		contRef=0;
 		//Se agrega el nombre de la unidad.
 		nombre = this.getLocalName();
 		//Se añade el servicio de disponibilidad de Unidad SWAT
@@ -65,9 +76,14 @@ public class AgenteUnidad extends Agent {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CONFIRM);
 			ACLMessage msg = myAgent.receive(mt);
 			if(msg!=null) {
+				contMensajesRecibidos++;
 				ACLMessage respuesta = msg.createReply();
+				contadorRespuestaMensajes++;
 				respuesta.setPerformative(ACLMessage.AGREE);
-				respuesta.setContent("si");			
+				respuesta.setContent("si");		
+				sumEnv+=respuesta.getContent().length();
+				contEnv++;
+				contadorMensajesServicios++;
 				myAgent.send(respuesta);
 			}else {
 				block();
@@ -94,18 +110,20 @@ public class AgenteUnidad extends Agent {
 			int yFinal = Integer.parseInt(partes[4]);
 
 			// Se inicia el estado como despejado.
-			estado = "despejado,"+zona;
+			estado = "despejado";
+			contCamb++;
 			for(int i = xInicial; i < xFinal ; i++) {
 				for(int j = yInicial; j < yFinal; j++) {
 					// En caso de encontrar un "1" dentro de la matriz, se cambia el estado a "encontrado" y se sale de inmediato.
 					//doWait(100);
-					
+					contRef++;
 					if(!Mision.getInstancia().getEstado()) {
+						contRef++;
 						if(Mision.getInstancia().getMapa().getMapa()[j][i] == 1) {
-							estado = "encontrado,"+zona;
-							bombaX = i;
-							bombaY = j;
+							estado = "encontrado";
+							contCamb++;
 							Mision.getInstancia().setEstado(true);
+							contRef++;
 							System.out.println("Agente "+nombre+" reviso la "+zona + " ("+i+","+j+") y encontro la bomba");	
 							addBehaviour(new notificarUnidades());
 							break;
@@ -116,25 +134,30 @@ public class AgenteUnidad extends Agent {
 					}
 					
 				}
-				if(estado.equalsIgnoreCase("encontrado"+zona)) {
+				if(estado.equalsIgnoreCase("encontrado")) {
 					break;
 				}
 			}
 			// En cado de encontrar o no encontrar la bomba, se cambiara el estado de la zona misma a "encontrado" o "despejado".
-			if(estado.equalsIgnoreCase("encontrado"+zona)) {
+			if(estado.equalsIgnoreCase("encontrado")) {
 				for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
+					contRef+=2;
 					if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador().equalsIgnoreCase(zona)){
 						Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("encontrado");
+						contRef++;
 					}
 				}
 			} else {
 				for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
+					contRef+=2;
 					if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador().equalsIgnoreCase(zona)){
 						Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("despejado");
+						contRef++;
 					}
 				}
 			}
 			System.out.println(nombre + " notifica que la zona estaba " + estado);
+			contRef++;
 			if(!Mision.getInstancia().getEstado()) {
 				addBehaviour(new buscarNuevaZona());
 			}else {
@@ -155,7 +178,9 @@ public class AgenteUnidad extends Agent {
 			ACLMessage msg = myAgent.receive(mt);
 			// Se verifica si el mensaje esta vacio.
 			if(msg != null) {
+				contMensajesRecibidos++;
 				coordenadas = msg.getContent();
+				contCamb++;
 				System.out.println("He obtenido las coordenadas!");
 				addBehaviour(new RecorrerZona());
 			}else {
@@ -174,10 +199,13 @@ public class AgenteUnidad extends Agent {
 		public void action() {
 			System.out.println(nombre+ " Buscando nueva zona");
 			for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
+				contRef+=2;
 				// Si la zona de la lista esta libre se procede a recorrer la zona.
 				if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getEstado().equalsIgnoreCase("libre")) {
 					Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("ocupado");
+					contRef+=2;
 					coordenadas = Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXInicial()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYInicial()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXFinal()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYFinal();
+					contCamb++;
 					System.out.println("yo el "+nombre+"Tengo la zona "+coordenadas);
 					addBehaviour(new RecorrerZona());
 					break;
@@ -216,7 +244,8 @@ public class AgenteUnidad extends Agent {
 			}
 			//Seteo el contenido del mensaje con la zona 
 			req.setContent(coordenadas);
-
+			sumEnv+=req.getContent().length();
+			contEnv++;
 			//Se ajustan algunas propiedades del mensaje
 			req.setConversationId("envio-zona");
 			req.setReplyWith("request"+System.currentTimeMillis()); // Valor unico
@@ -239,6 +268,7 @@ public class AgenteUnidad extends Agent {
 			ACLMessage msg = myAgent.receive(mt);
 			// Se verifica si el mensaje esta vacio.
 			if(msg != null) {
+				contMensajesRecibidos++;
 				addBehaviour(new desactivarBomba());
 			}else {
 				block();
@@ -257,6 +287,8 @@ public class AgenteUnidad extends Agent {
 			//Envia un mensaje al lider.
 			ACLMessage req = new ACLMessage(ACLMessage.INFORM);
 			req.setContent("desactivado");
+			sumEnv+=req.getContent().length();
+			contEnv++;
 			req.addReceiver(new AID ("Baldo",AID.ISLOCALNAME));
 			req.setConversationId("iniciacion");
 			req.setReplyWith("si");
@@ -270,5 +302,34 @@ public class AgenteUnidad extends Agent {
 	 */
 	protected void takeDown() {
 		System.out.println(nombre+": termina su servicio.");
+		System.out.println("Cantidad de mensajes respondidos por la "+nombre+": "+contadorRespuestaMensajes);
+		System.out.println("Cantidad de mensajes recibidos por la "+nombre+": "+contMensajesRecibidos);
+		System.out.println("Suma de los mensajes en bytes: "+sumEnv+"bytes por la "+nombre);
+		System.out.println("Suma de los mensajes enviados por la "+nombre+" : "+contEnv);
+		System.out.println("Cantidad de estados actualizados "+nombre+": "+contCamb);
+		System.out.println("Bytes del "+nombre+":"+ this.nombre.length());
+		System.out.println("Bytes de coordenada "+nombre+":"+ this.coordenadas.length());
+		System.out.println("Cantidad de referencias usados "+nombre+": "+contRef);                                                      
+		
+		System.out.println("MSout: "+ sumEnv/contEnv);
+		
+		System.out.println("---------- \n"+
+		"Nombre Agente:"+nombre+"\n"+
+		"-COMUNICACION- \n"+
+		"**Respuestas por mensaje** \n"+
+		"SMi:"+contadorRespuestaMensajes+"\n"+
+		"n:"+contMensajesRecibidos+"\n"+
+		"**Tamanio promedio de mensajes** \n"+
+		"n:"+contEnv+"\n"+
+		"sumatoria hasta n de MBi:"+sumEnv+"\n"+
+		"**Numero de mensajes recibidos** \n"+
+		"IM:"+contMensajesRecibidos+"\n"+
+		"**Numero de mensajes enviados** \n"+
+		"OM:"+ (contEnv/contadorRespuestaMensajes)+"\n"+
+		"COOPERACION \n"+
+		"**Solicitudes de servicio rechazadas por el agente**"+
+		"SA:"+contadorMensajesServicios+"\n"+
+		"SR:0 \n"+
+		"---------- \n");
 	}
 }

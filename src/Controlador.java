@@ -1,17 +1,11 @@
 
 
-import java.util.Scanner;
 
-import jade.core.AID;
-import jade.core.Agent;
+import java.util.Scanner;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
-import jade.domain.AMSService;
-import jade.domain.FIPAAgentManagement.AMSAgentDescription;
-import jade.domain.FIPAAgentManagement.SearchConstraints;
 import jade.util.leap.Properties;
 import jade.wrapper.AgentContainer;
-import jade.wrapper.ControllerException;
 import jade.wrapper.StaleProxyException;
 
 public class Controlador {
@@ -52,5 +46,7 @@ public class Controlador {
 	    }
 
 	}
+	
+
 
 }
