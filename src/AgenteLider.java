@@ -26,22 +26,40 @@ public class AgenteLider extends Agent {
 	// Variable global del Agente Lider que indica la cantidad de Unidades que tiene a su mando
 	private int cantidadUnidad;
 	
-	private int contadorRspMsg;
-	private int contMsgRec;
+	private int contadorRespuestaMensajes;
+	private int contadorMensajesServicios;
+	private int contMensajesRecibidos;
+	private int contMensajesEjecutivoRecibidos;
 	private int sumEnv;
 	private int contEnv;
 	private int contCamb;
+	private int contadorActualizadas;
 	private int contRef;
+	private int objetivoAlcanzado;
+	private int solicitarServicio;
+	private int totalPunteroReferencia;
+	private int contMensajesEjecutivoEnviados;
+	private int contTiposMensajesEnviados;
+	private int contTiposMensajesRecibidos;
 	/**
 	 * Setup que inicializa el agente Lider.
 	 */
 	protected void setup() {
-		contadorRspMsg= 0;
-		contMsgRec=0;
+		contadorRespuestaMensajes= 0;
+		contMensajesRecibidos=0;
+		contadorMensajesServicios=0;
 		sumEnv=0;
 		contEnv=0;
 		contCamb=0;
 		contRef=0;
+		objetivoAlcanzado=0;
+		solicitarServicio=0;
+		totalPunteroReferencia=0;
+		contMensajesEjecutivoRecibidos=0;
+		contadorActualizadas=0;
+		contMensajesEjecutivoEnviados=0;
+		contTiposMensajesEnviados=0;
+		contTiposMensajesRecibidos=0;
 		System.out.println("Hola, soy el lider");
 		addBehaviour(new ObtenerMision());
 	}
@@ -56,8 +74,11 @@ public class AgenteLider extends Agent {
 		public void action() {
 			// Se obtiene la mision por la instancia
 			mision = Mision.getInstancia();	
+			contadorActualizadas++;
+			totalPunteroReferencia++;
 			listaCoordenadas = mision.getMapa().getListaCoordenadas();
 			contCamb++;
+			contadorActualizadas++;
 			System.out.println("He obtenido la misión!");
 			JOptionPane.showMessageDialog(null,"Mision: "+mision.getobjetivo().getTipo());
 			JOptionPane.showMessageDialog(null,"Descripcion: "+mision.getobjetivo().getDescripcion());
@@ -94,10 +115,12 @@ public class AgenteLider extends Agent {
 				if(listaCoordenadas.length<5) {
 					cantidadUnidad = listaCoordenadas.length;
 					contCamb++;
+					contadorActualizadas++;
 				} else {
 					// En caso contrario se dejara como base 5 unidades, y por cada 10 zonas hay 5 unidades más.
 					cantidadUnidad = 5 + ((int)(listaCoordenadas.length/10))*5;
 					contCamb++;
+					contadorActualizadas++;
 				}
 				for(int j = 0;j<cantidadUnidad;j++) {			
 					try {					
@@ -110,9 +133,11 @@ public class AgenteLider extends Agent {
 				break;
 			case 1:
 				MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.AGREE);
+				
 				if(!respondio) {
 					//Envia un mensaje a las unidades recien creadas.
 					ACLMessage req = new ACLMessage(ACLMessage.CONFIRM);
+					contTiposMensajesEnviados++;
 					req.setContent("Listo");
 					sumEnv+=req.getContent().length();
 					contEnv++;
@@ -125,12 +150,13 @@ public class AgenteLider extends Agent {
 				//Si se recibio respuesta, se suma el contador de unidades instanciadas.
 				ACLMessage respuesta = myAgent.receive(mt);
 				if(respuesta!=null) {
-					contMsgRec++;
+					contMensajesRecibidos++;
 					cont++;
 					respondio = false;
 				}
 				//Si el contador es igual a la cantidad de zonas, se da inicio al paso 2.
 				if(cont == cantidadUnidad) {	
+					contTiposMensajesRecibidos++;
 					paso = 2;
 				}
 				break;
@@ -140,12 +166,13 @@ public class AgenteLider extends Agent {
 				ServiceDescription sd = new ServiceDescription();
 				sd.setType("unidad-swat");
 				template.addServices(sd);
-
+				solicitarServicio++;
 				try {
 					//Se agregan los DFservices encontrados al arreglo result.
 					DFAgentDescription[] result = DFService.search(myAgent, template);
 					System.out.println("Se encontraron " + result.length + " agentes unidades:");
 					listaUnidades = new AID[result.length];
+					contadorActualizadas++;
 					contCamb++;
 					//Se agregan los AID al arreglo listaUnidades.
 					for(int i = 0; i < result.length ; i++) {
@@ -181,7 +208,7 @@ public class AgenteLider extends Agent {
 			System.out.println("Comienzo a distribuir las zonas:");
 			// Envia el request a todas las unidades
 			ACLMessage req = new ACLMessage(ACLMessage.REQUEST);
-
+			contTiposMensajesEnviados++;
 			for (int i = 0; i < cantidadUnidad; ++i) {
 				//Se limpia la lista de receptores, para evitar problemas de sincronizacion
 				req.clearAllReceiver();
@@ -201,6 +228,7 @@ public class AgenteLider extends Agent {
 				contRef++;
 				//Se envia el mensaje
 				myAgent.send(req);
+				contMensajesEjecutivoEnviados++;
 			}
 			addBehaviour(new EsperarReporte());
 		}		
@@ -220,7 +248,7 @@ public class AgenteLider extends Agent {
 			//Si se recibio respuesta, dependiendo de la respuesta entregada, se reportara la mision
 			ACLMessage respuesta = myAgent.receive(mt);
 			if(respuesta!=null) {
-				contMsgRec++;
+				contMensajesRecibidos++;
 				System.out.println("Me llego una notificacion de " + respuesta.getSender().getLocalName());
 				String estado = respuesta.getContent();
 				if(estado.equals("desactivado")) {
@@ -228,6 +256,7 @@ public class AgenteLider extends Agent {
 				}
 				
 				if(contador==cantidadUnidad) {
+					contTiposMensajesRecibidos++;
 					addBehaviour(new ReportarMision());
 				}
 			}
@@ -246,7 +275,7 @@ public class AgenteLider extends Agent {
 	private class ReportarMision extends OneShotBehaviour{
 
 		public void action() {
-			
+			objetivoAlcanzado++;
 			JOptionPane.showMessageDialog(null,"¡La misión ha terminado!");
 			doDelete();
 		}
@@ -259,8 +288,6 @@ public class AgenteLider extends Agent {
 	protected void takeDown() {
 
 		System.out.println(getAID().getLocalName() +" termina sus servicios, equipo SWAT se despide.");
-		System.out.println("Cantidad de mensajes respondidos por el Lider: "+contadorRspMsg);
-		System.out.println("Cantidad de mensajes recibidos por el Lider: "+contMsgRec);
 		System.out.println("Suma de los mensajes en bytes: "+sumEnv+"bytes por el Lider");
 		System.out.println("Cantidad de mensajes enviados por el Lider: "+contEnv);
 		System.out.println("Cantidad de estados actualizados: "+contCamb);
@@ -274,6 +301,83 @@ public class AgenteLider extends Agent {
         // Calculate the used memory
         long memory = runtime.totalMemory() - runtime.freeMemory();
         System.out.println("Used memory is Mbytes: " + memory/MEGABYTE);
+        
+        System.out.println("-------------------- \n"+
+        		"Nombre Agente: Baldo\n"+
+        		"------------------------ \n"+
+        		"--->HABILIDAD-SOCIAL<---\n"+
+        		"------------------------ \n"+
+        		"-----COMUNICACION----- \n"+
+        		"**Respuestas por mensaje** \n"+
+        		"SMi: "+contadorRespuestaMensajes+"\n"+
+        		"n: "+contMensajesRecibidos+"\n"+
+        		"**Tamanio promedio de mensajes** \n"+
+        		"n: "+contEnv+"\n"+
+        		"sumatoria hasta n de MBi:"+sumEnv+"\n"+
+        		"**Numero de mensajes recibidos** \n"+
+        		"IM: "+contMensajesRecibidos+"\n"+
+        		"**Numero de mensajes enviados** \n"+
+        		"OM: "+ (contEnv-contadorRespuestaMensajes)+"\n"+
+        		"-----COOPERACION----- \n"+
+        		"**Solicitudes de servicio rechazadas por el agente**"+
+        		"SA: "+contadorMensajesServicios+"\n"+
+        		"SR: 0 \n"+
+        		"**Numero de servicios ofrecidos por el agente**"+
+        		"SA: 0\n"+
+        		"-----NEGOCIACION----- \n"+
+        		"**Objetivos alcanzados por el agente**"+
+        		"G: "+objetivoAlcanzado+"\n"+
+        		"**Mensajes por un servicio solicitado**"+
+        		"MS: 0\n"+
+        		"**Mensajes enviados para solicitar un servicio**"+
+        		"MR: "+solicitarServicio+"\n"+
+        		"----------------- \n"+
+        		"--->AUTONOMIA<---\n"+
+        		"----------------- \n"+
+        		"-----AUTO-CONTROL----- \n"+
+				"**Complejidad estructural** \n"+
+				"SUM CP: "+totalPunteroReferencia+"\n"+
+				"**tamaño del sistema interno** \n"+
+				"SUM VBi: ERROR\n"+
+				"**complejidad de comportamiento** \n"+
+				"SUM CSi: 0\n"+
+				"-----INDEPENDENCIA FUNCIONAL----- \n"+
+				"**Fraccion de mensajes de tipo ejecutivo** \n"+
+				"MR: "+contMensajesRecibidos+"\n"+
+				"ME: "+contMensajesEjecutivoRecibidos+"\n"+
+				"-----CAPACIDAD DE EVOLUCION----- \n"+
+				"**Capacidad para actualizar el estado** \n"+
+				"SUM Sij: "+contadorActualizadas+"\n"+
+				"**Frecuencia de actualizacion del estado** \n"+
+				"SUM Vij: "+contCamb+"\n"+
+				"-------------------- \n"+
+        		"--->PROACTIVIDAD<---\n"+
+				"-------------------- \n"+
+        		"-----INICIATIVA----- \n"+
+        		"**Numero de roles**"+
+        		"NR: 1\n"+
+        		"**Objetivos alcanzados por el agente**"+
+        		"G: "+objetivoAlcanzado+"\n"+
+        		"**Mensajes para alcanzar los objetivos**"+
+        		"EM: "+contMensajesEjecutivoEnviados+"\n"+
+        		"TM: "+(contEnv+contMensajesRecibidos)+"\n"+
+        		"n: "+objetivoAlcanzado+"\n"+
+        		"-----INTERACCION----- \n"+
+        		"**Servicios por agente**"+
+        		"S: 0\n"+
+        		"**Numero de tipos de mensajes**"+
+        		"IM: "+contTiposMensajesRecibidos+"\n"+
+        		"OM: "+contTiposMensajesEnviados+"\n"+
+        		"**Numero promedio de servicios requeridos por un agente**"+
+        		"n: 0\n"+
+        		"SUM CSi: 0\n"+
+        		"-----REACCION----- \n"+
+        		"**Numero de solicitudes recibidas**"+
+        		"MN: 0\n"+
+        		"**Complejidad de operaciones del agente**"+
+        		"SUM Ci: ERROR\n"+
+        		"n: "+objetivoAlcanzado+"\n"+
+        		"");
 	}
 
 }
