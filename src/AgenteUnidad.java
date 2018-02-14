@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -8,6 +10,12 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.lang.instrument.Instrumentation;
+
 /**
  * @author Baldo Morales
  * @author Kevin Araya
@@ -24,9 +32,15 @@ public class AgenteUnidad extends Agent {
 	// Variable coordenadas, que guarda el nombre, el punto inicial, y final de las zonas a revisar.
 	private String coordenadas;
 	
+	//Variables de contadores para las metricas
 	private int contadorRespuestaMensajes;
 	private int contadorMensajesServicios;
+	private int contadorMensajesServSolicitados;
 	private int contMensajesRecibidos;
+	private int contMensajesEjecutivos;
+	private int contRespuestaSolicitud;
+	private int contServicios;
+	private int contVariables;
 	private int sumEnv;
 	private int contEnv;
 	private int contCamb;
@@ -37,8 +51,13 @@ public class AgenteUnidad extends Agent {
 	 */
 	protected void setup() {
 		contadorRespuestaMensajes = 0;
+		contadorMensajesServSolicitados = 0;
 		contMensajesRecibidos = 0;
 		contadorMensajesServicios = 0;
+		contMensajesEjecutivos = 0;
+		contServicios = 0;
+		contRespuestaSolicitud = 0;
+		contVariables = 0;
 		sumEnv=0;
 		contEnv=0;
 		contCamb=0;
@@ -57,6 +76,20 @@ public class AgenteUnidad extends Agent {
 		}catch(FIPAException fe) {
 			fe.printStackTrace();
 		}
+		
+		//Contar los servicios que se encuentran disponibles
+		DFAgentDescription[] result;
+		try {
+			result = DFService.search(this, dfd);
+			if(result.length>0) {
+				contServicios = result.length;
+			}
+		} catch (FIPAException e) {			
+			e.printStackTrace();
+		}
+		
+		contVariables = 3;
+		
 		System.out.println(nombre+": disponible para la mision.");
 		addBehaviour(new respuestaInstancia());
 		//Se da paso al comportamiento que espera el perimetro a revisar
@@ -77,6 +110,7 @@ public class AgenteUnidad extends Agent {
 			ACLMessage msg = myAgent.receive(mt);
 			if(msg!=null) {
 				contMensajesRecibidos++;
+				contRespuestaSolicitud++;
 				ACLMessage respuesta = msg.createReply();
 				contadorRespuestaMensajes++;
 				respuesta.setPerformative(ACLMessage.AGREE);
@@ -181,6 +215,7 @@ public class AgenteUnidad extends Agent {
 				contMensajesRecibidos++;
 				coordenadas = msg.getContent();
 				contCamb++;
+				contMensajesEjecutivos++;
 				System.out.println("He obtenido las coordenadas!");
 				addBehaviour(new RecorrerZona());
 			}else {
@@ -313,23 +348,104 @@ public class AgenteUnidad extends Agent {
 		
 		System.out.println("MSout: "+ sumEnv/contEnv);
 		
-		System.out.println("---------- \n"+
-		"Nombre Agente:"+nombre+"\n"+
-		"-COMUNICACION- \n"+
-		"**Respuestas por mensaje** \n"+
-		"SMi:"+contadorRespuestaMensajes+"\n"+
-		"n:"+contMensajesRecibidos+"\n"+
-		"**Tamanio promedio de mensajes** \n"+
-		"n:"+contEnv+"\n"+
-		"sumatoria hasta n de MBi:"+sumEnv+"\n"+
-		"**Numero de mensajes recibidos** \n"+
-		"IM:"+contMensajesRecibidos+"\n"+
-		"**Numero de mensajes enviados** \n"+
-		"OM:"+ (contEnv/contadorRespuestaMensajes)+"\n"+
-		"COOPERACION \n"+
-		"**Solicitudes de servicio rechazadas por el agente**"+
-		"SA:"+contadorMensajesServicios+"\n"+
-		"SR:0 \n"+
-		"---------- \n");
+		
+		crearMetricas();
 	}
+	
+	private void crearMetricas() {
+		PrintWriter writer = null;
+		try {
+			writer = new PrintWriter("MetricasUnidad.txt", "UTF-8");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		writer.println("---------- \n"+
+				"Nombre Agente:"+nombre+"\n \n"+
+				"*-HABILIDAD SOCIAL-* \n"+
+				"-COMUNICACION- \n"+
+				"**Respuestas por mensaje** \n"+
+				"SMi:"+contadorRespuestaMensajes+"\n"+
+				"n:"+contMensajesRecibidos+"\n"+
+				"**Tamanio promedio de mensajes** \n"+
+				"n:"+contEnv+"\n"+
+				"sumatoria hasta n de MBi:"+sumEnv+"\n"+
+				"**Numero de mensajes recibidos** \n"+
+				"IM:"+contMensajesRecibidos+"\n"+
+				"**Numero de mensajes enviados** \n"+
+				"OM:"+ (contEnv/contadorRespuestaMensajes)+"\n"+
+				"COOPERACION \n"+
+				"**Solicitudes de servicio rechazadas por el agente** \n"+
+				"SA:"+contadorMensajesServicios+"\n"+
+				"SR:0 \n"+
+				"**Numero de servicios ofrecidos por el agente** \n"+
+				"S:"+contServicios+"\n"+
+				"NEGOCIACION \n"+
+				"**Objetivos alcanzados por el agente** \n"+
+				"G:1 \n"+
+				"**Mensajes por un servicio solicitado** \n"+
+				"MS:"+contRespuestaSolicitud+"\n"+
+				"**Mensajes enviados para solicitar un servicio**\n"+
+				"MR:"+contadorMensajesServSolicitados+ "\n");
+		
+		writer.println("*-AUTONOMIA-* \n"+
+				"AUTOCONTROL \n"+
+				"**Complejidad estructural** \n"+
+				"n: 1"+"\n"+
+				"CP: 3"+
+				"**Tamanio del estado interno** \n"+
+				"n:"+"\n"+
+				//Modificar 
+				"Sum VBi:"+"\n"+
+				"**Complejidad de comportamiento** \n"+
+				"n:"+ contServicios+ "\n"+
+				"Sum CSi:"+
+				"INDEPENDENCIA FUNCIONAL \n"+
+				"**Fraccion de mensajes de tipo ejecutivo** \n"+
+				"MR:"+contMensajesRecibidos+"\n"+
+				"ME:"+ contMensajesEjecutivos+
+				"CAPACIDAD DE EVOLUCION \n"+
+				"**Capacidad para actualizar el estado** \n"+
+				//Modificar
+				"n:"+cantInstrucciones+ "\n"+
+				"m:"+ contVariables+"\n"+
+				"Sumatoria de Sij:"+sumSij +"\n"+
+				"**Frecuencia de actualizacion del estado** \n"+
+				"n:"+ cantInstrucciones+ "\n"+
+				"m:"+ contvariables+ "\n"+
+				"Sumatoria de VCij:"+sumVCij+"\n");
+		
+		writer.println("-------------------- \n"+
+        		"--->PROACTIVIDAD<---\n"+
+				"-------------------- \n"+
+        		"-----INICIATIVA----- \n"+
+        		"**Numero de roles**"+
+        		"NR: 1\n"+
+        		"**Objetivos alcanzados por el agente**"+
+        		"G: "+objetivoAlcanzado+"\n"+
+        		"**Mensajes para alcanzar los objetivos**"+
+        		"EM: "+contMensajesEjecutivoEnviados+"\n"+
+        		"TM: "+(contEnv+contMensajesRecibidos)+"\n"+
+        		"n: "+objetivoAlcanzado+"\n"+
+        		"-----INTERACCION----- \n"+
+        		"**Servicios por agente**"+
+        		"S: 0\n"+
+        		"**Numero de tipos de mensajes**"+
+        		"IM: "+contTiposMensajesRecibidos+"\n"+
+        		"OM: "+contTiposMensajesEnviados+"\n"+
+        		"**Numero promedio de servicios requeridos por un agente**"+
+        		"n: 0\n"+
+        		"SUM CSi: 0\n"+
+        		"-----REACCION----- \n"+
+        		"**Numero de solicitudes recibidas**"+
+        		"MN: 0\n"+
+        		"**Complejidad de operaciones del agente**"+
+        		"SUM Ci: ERROR\n"+
+        		"n: "+objetivoAlcanzado+"\n");
+		writer.close();
+	}
+	
 }

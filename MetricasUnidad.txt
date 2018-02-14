@@ -1,0 +1,43 @@
+---------- 
+Nombre Agente:unidad1
+*-HABILIDAD SOCIAL-* 
+-COMUNICACION- 
+**Respuestas por mensaje** 
+SMi:1
+n:3
+**Tamanio promedio de mensajes** 
+n:3
+sumatoria hasta n de MBi:28
+**Numero de mensajes recibidos** 
+IM:3
+**Numero de mensajes enviados** 
+OM:3
+COOPERACION 
+**Solicitudes de servicio rechazadas por el agente** 
+SA:1
+SR:0 
+**Numero de servicios ofrecidos por el agente** 
+S:1
+NEGOCIACION**Objetivos alcanzados por el agente** 
+G:1 
+**Mensajes por un servicio solicitado** 
+MS:1
+**Mensajes enviados para solicitar un servicio**
+MR:0
+*-AUTONOMIA-* 
+AUTOCONTROL 
+**Complejidad estructural** 
+n: 1
+CP: 3**Tamanio del estado interno** 
+n:
+Sum VBi:
+**Complejidad de comportamiento** 
+n:1
+Sum CSi:INDEPENDENCIA FUNCIONAL 
+**Fraccion de mensajes de tipo ejecutivo** 
+MR:3
+ME:1CAPACIDAD DE EVOLUCION 
+**Capacidad para actualizar el estado** 
+---------- 
+
+Lines 2
