@@ -45,6 +45,13 @@ public class AgenteUnidad extends Agent {
 	private int contEnv;
 	private int contCamb;
 	private int contRef;
+	private int cantInstrucciones;
+	private int sumSij;
+	private int sumVCij;
+	private int objetivoAlcanzado;
+	private int contMensajesEjecutivoEnviados;
+	private int contTiposMensajesRecibidos;
+	private int contTiposMensajesEnviados;
 	
 	/**
 	 * Setup que inicializa el agente Unidad.
@@ -62,6 +69,14 @@ public class AgenteUnidad extends Agent {
 		contEnv=0;
 		contCamb=0;
 		contRef=0;
+		cantInstrucciones= 0;
+		sumSij = 0;
+		sumVCij= 0;
+		objetivoAlcanzado= 0;
+		contMensajesEjecutivoEnviados= 0;
+		contTiposMensajesRecibidos= 0;
+		contTiposMensajesEnviados= 0;
+		
 		//Se agrega el nombre de la unidad.
 		nombre = this.getLocalName();
 		//Se añade el servicio de disponibilidad de Unidad SWAT
@@ -104,8 +119,13 @@ public class AgenteUnidad extends Agent {
 	 * Si no obtiene mensajes de performative confirmar, se bloquea.
 	 */
 	private class respuestaInstancia extends CyclicBehaviour{
-
+		boolean contado = false;
 		public void action() {
+			
+			if(!contado) {
+				cantInstrucciones++;
+				contado = true;
+			}
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CONFIRM);
 			ACLMessage msg = myAgent.receive(mt);
 			if(msg!=null) {
@@ -132,8 +152,13 @@ public class AgenteUnidad extends Agent {
 	 * 
 	 */
 	private class RecorrerZona extends OneShotBehaviour{
+		boolean contado = false;
 		public void action() {
 
+			if(!contado) {
+				cantInstrucciones++;
+				contado = true;
+			}
 			//Se decodifica el mensaje. en nombre de zona, x1,y1,x2,y2.
 			String[] partes = coordenadas.split(",");
 			String zona = partes[0];
@@ -144,7 +169,7 @@ public class AgenteUnidad extends Agent {
 			int yFinal = Integer.parseInt(partes[4]);
 
 			// Se inicia el estado como despejado.
-			estado = "despejado";
+			estado = "despejado,"+zona;
 			contCamb++;
 			for(int i = xInicial; i < xFinal ; i++) {
 				for(int j = yInicial; j < yFinal; j++) {
@@ -154,7 +179,7 @@ public class AgenteUnidad extends Agent {
 					if(!Mision.getInstancia().getEstado()) {
 						contRef++;
 						if(Mision.getInstancia().getMapa().getMapa()[j][i] == 1) {
-							estado = "encontrado";
+							estado = "encontrado,"+zona;
 							contCamb++;
 							Mision.getInstancia().setEstado(true);
 							contRef++;
@@ -168,12 +193,12 @@ public class AgenteUnidad extends Agent {
 					}
 					
 				}
-				if(estado.equalsIgnoreCase("encontrado")) {
+				if(estado.equalsIgnoreCase("encontrado"+zona)) {
 					break;
 				}
 			}
 			// En cado de encontrar o no encontrar la bomba, se cambiara el estado de la zona misma a "encontrado" o "despejado".
-			if(estado.equalsIgnoreCase("encontrado")) {
+			if(estado.equalsIgnoreCase("encontrado"+zona)) {
 				for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
 					contRef+=2;
 					if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador().equalsIgnoreCase(zona)){
@@ -206,8 +231,13 @@ public class AgenteUnidad extends Agent {
 	 *
 	 */
 	private class ObtenerZona extends CyclicBehaviour{
+		boolean contado = false;
 		public void action() {
 
+			if(!contado) {
+				cantInstrucciones++;
+				contado = true;
+			}
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
 			ACLMessage msg = myAgent.receive(mt);
 			// Se verifica si el mensaje esta vacio.
@@ -231,7 +261,13 @@ public class AgenteUnidad extends Agent {
 	 *
 	 */
 	private class buscarNuevaZona extends OneShotBehaviour{
+		boolean contado = false;
 		public void action() {
+
+			if(!contado) {
+				cantInstrucciones++;
+				contado = true;
+			}
 			System.out.println(nombre+ " Buscando nueva zona");
 			for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
 				contRef+=2;
@@ -257,8 +293,14 @@ public class AgenteUnidad extends Agent {
 	 *
 	 */
 	private class notificarUnidades extends OneShotBehaviour{
+		boolean contado = false;
 		DFAgentDescription[] result;
 		public void action() {
+
+			if(!contado) {
+				cantInstrucciones++;
+				contado = true;
+			}
 			//Busca en el DF a traves del tipo "unidad-swat" a todos los agentes que presten este servicio
 			DFAgentDescription template = new DFAgentDescription();
 			ServiceDescription sd = new ServiceDescription();
@@ -298,7 +340,13 @@ public class AgenteUnidad extends Agent {
 	 *
 	 */
 	private class esperarNotificacion extends CyclicBehaviour{
+		boolean contado = false;
 		public void action() {
+
+			if(!contado) {
+				cantInstrucciones++;
+				contado = true;
+			}
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
 			ACLMessage msg = myAgent.receive(mt);
 			// Se verifica si el mensaje esta vacio.
@@ -318,7 +366,13 @@ public class AgenteUnidad extends Agent {
 	 *
 	 */
 	private class desactivarBomba extends OneShotBehaviour{
+		boolean contado = false;
 		public void action() {
+
+			if(!contado) {
+				cantInstrucciones++;
+				contado = true;
+			}
 			//Envia un mensaje al lider.
 			ACLMessage req = new ACLMessage(ACLMessage.INFORM);
 			req.setContent("desactivado");
@@ -337,18 +391,6 @@ public class AgenteUnidad extends Agent {
 	 */
 	protected void takeDown() {
 		System.out.println(nombre+": termina su servicio.");
-		System.out.println("Cantidad de mensajes respondidos por la "+nombre+": "+contadorRespuestaMensajes);
-		System.out.println("Cantidad de mensajes recibidos por la "+nombre+": "+contMensajesRecibidos);
-		System.out.println("Suma de los mensajes en bytes: "+sumEnv+"bytes por la "+nombre);
-		System.out.println("Suma de los mensajes enviados por la "+nombre+" : "+contEnv);
-		System.out.println("Cantidad de estados actualizados "+nombre+": "+contCamb);
-		System.out.println("Bytes del "+nombre+":"+ this.nombre.length());
-		System.out.println("Bytes de coordenada "+nombre+":"+ this.coordenadas.length());
-		System.out.println("Cantidad de referencias usados "+nombre+": "+contRef);                                                      
-		
-		System.out.println("MSout: "+ sumEnv/contEnv);
-		
-		
 		crearMetricas();
 	}
 	
@@ -412,10 +454,11 @@ public class AgenteUnidad extends Agent {
 				//Modificar
 				"n:"+cantInstrucciones+ "\n"+
 				"m:"+ contVariables+"\n"+
-				"Sumatoria de Sij:"+sumSij +"\n"+
+				"Sumatoria de Sij:"+ sumSij +"\n"+
+				//Modificar
 				"**Frecuencia de actualizacion del estado** \n"+
 				"n:"+ cantInstrucciones+ "\n"+
-				"m:"+ contvariables+ "\n"+
+				"m:"+ contVariables+ "\n"+
 				"Sumatoria de VCij:"+sumVCij+"\n");
 		
 		writer.println("-------------------- \n"+
@@ -425,11 +468,11 @@ public class AgenteUnidad extends Agent {
         		"**Numero de roles**"+
         		"NR: 1\n"+
         		"**Objetivos alcanzados por el agente**"+
-        		"G: "+objetivoAlcanzado+"\n"+
+        		"G: 1\n"+
         		"**Mensajes para alcanzar los objetivos**"+
         		"EM: "+contMensajesEjecutivoEnviados+"\n"+
         		"TM: "+(contEnv+contMensajesRecibidos)+"\n"+
-        		"n: "+objetivoAlcanzado+"\n"+
+        		"n: 1\n"+
         		"-----INTERACCION----- \n"+
         		"**Servicios por agente**"+
         		"S: 0\n"+
