@@ -402,7 +402,9 @@ public class AgenteUnidad extends Agent {
 	private void crearMetricas() {
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter("MetricasUnidad.txt", "UTF-8");
+			writer = new PrintWriter("MetricasUnidad"+Mision.getInstancia().getMapa().getColumnas()+
+					Mision.getInstancia().getMapa().getFilas()+
+					Mision.getInstancia().getMapa().getListaCoordenadas().length+".txt", "UTF-8");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -412,6 +414,9 @@ public class AgenteUnidad extends Agent {
 		}
 		writer.println("---------- \n"+
 				"Nombre Agente:"+nombre+"\n \n"+
+				Mision.getInstancia().getMapa().getColumnas()+"x"+
+				Mision.getInstancia().getMapa().getFilas()+"\n"+
+				Mision.getInstancia().getMapa().getListaCoordenadas().length+"\n"+
 				"*-HABILIDAD SOCIAL-* \n"+
 				"-COMUNICACION- \n"+
 				"**Respuestas por mensaje** \n"+

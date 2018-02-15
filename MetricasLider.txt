@@ -1,19 +1,20 @@
 -------------------- 
 Nombre Agente: Baldo
+101015
 ------------------------ 
 --->HABILIDAD-SOCIAL<---
 ------------------------ 
 -----COMUNICACION----- 
 **Respuestas por mensaje** 
 SMi: 0
-n: 30
+n: 20
 **Tamanio promedio de mensajes** 
-n: 30
-sumatoria hasta n de MBi:323
+n: 20
+sumatoria hasta n de MBi:185
 **Numero de mensajes recibidos** 
-IM: 30
+IM: 20
 **Numero de mensajes enviados** 
-OM: 30
+OM: 20
 -----COOPERACION----- 
 **Solicitudes de servicio rechazadas por el agente**SA: 0
 SR: 0 
@@ -35,13 +36,13 @@ SUM VBi: Cantidad FIJA
 SUM CSi: 0
 -----INDEPENDENCIA FUNCIONAL----- 
 **Fraccion de mensajes de tipo ejecutivo** 
-MR: 30
+MR: 20
 ME: 0
 -----CAPACIDAD DE EVOLUCION----- 
 **Capacidad para actualizar el estado** 
 SUM Sij: 4
 **Frecuencia de actualizacion del estado** 
-SUM Vij: 18
+SUM Vij: 13
 
 -------------------- 
 --->PROACTIVIDAD<---
@@ -49,13 +50,13 @@ SUM Vij: 18
 -----INICIATIVA----- 
 **Numero de roles**NR: 1
 **Objetivos alcanzados por el agente**G: 1
-**Mensajes para alcanzar los objetivos**EM: 15
-TM: 60
+**Mensajes para alcanzar los objetivos**EM: 10
+TM: 40
 n: 1
 -----INTERACCION----- 
 **Servicios por agente**S: 0
 **Numero de tipos de mensajes**IM: 2
-OM: 16
+OM: 11
 **Numero promedio de servicios requeridos por un agente**n:0
 SUM CSi: 1
 -----REACCION----- 
