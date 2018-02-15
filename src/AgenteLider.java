@@ -228,7 +228,7 @@ public class AgenteLider extends Agent {
 				//Se ajustan algunas propiedades del mensaje
 				req.setConversationId("envio-zona");
 				req.setReplyWith("request"+System.currentTimeMillis()); // Valor unico
-				Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("ocupado");
+				Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado(Estado.OCUPADA);
 				contRef++;
 				//Se envia el mensaje
 				myAgent.send(req);
@@ -255,7 +255,7 @@ public class AgenteLider extends Agent {
 				contMensajesRecibidos++;
 				System.out.println("Me llego una notificacion de " + respuesta.getSender().getLocalName());
 				String estado = respuesta.getContent();
-				if(estado.equals("desactivado")) {
+				if(estado.equals(Estado.DESACTIVADA.toString())) {
 					contador++;
 				}
 				
