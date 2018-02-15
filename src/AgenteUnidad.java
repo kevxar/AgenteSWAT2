@@ -129,11 +129,13 @@ public class AgenteUnidad extends Agent {
 			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CONFIRM);
 			ACLMessage msg = myAgent.receive(mt);
 			if(msg!=null) {
+				contTiposMensajesRecibidos++;
 				contMensajesRecibidos++;
 				contRespuestaSolicitud++;
 				ACLMessage respuesta = msg.createReply();
 				contadorRespuestaMensajes++;
 				respuesta.setPerformative(ACLMessage.AGREE);
+				contTiposMensajesEnviados++;
 				respuesta.setContent("si");		
 				sumEnv+=respuesta.getContent().length();
 				contEnv++;
@@ -242,6 +244,7 @@ public class AgenteUnidad extends Agent {
 			ACLMessage msg = myAgent.receive(mt);
 			// Se verifica si el mensaje esta vacio.
 			if(msg != null) {
+				contTiposMensajesRecibidos++;
 				contMensajesRecibidos++;
 				coordenadas = msg.getContent();
 				contCamb++;
@@ -315,6 +318,7 @@ public class AgenteUnidad extends Agent {
 
 			int contUnidades = result.length;
 			ACLMessage req = new ACLMessage(ACLMessage.INFORM);
+			contTiposMensajesEnviados++;
 			for (int i = 0; i < contUnidades; ++i) {
 				//Agrego la unidad a la lista de unidades
 				req.addReceiver(result[i].getName());
@@ -351,6 +355,7 @@ public class AgenteUnidad extends Agent {
 			ACLMessage msg = myAgent.receive(mt);
 			// Se verifica si el mensaje esta vacio.
 			if(msg != null) {
+				contTiposMensajesRecibidos++;
 				contMensajesRecibidos++;
 				addBehaviour(new desactivarBomba());
 			}else {
@@ -475,16 +480,16 @@ public class AgenteUnidad extends Agent {
         		"n: 1\n"+
         		"-----INTERACCION----- \n"+
         		"**Servicios por agente**"+
-        		"S: 0\n"+
+        		"S: 1\n"+
         		"**Numero de tipos de mensajes**"+
         		"IM: "+contTiposMensajesRecibidos+"\n"+
         		"OM: "+contTiposMensajesEnviados+"\n"+
         		"**Numero promedio de servicios requeridos por un agente**"+
-        		"n: 0\n"+
-        		"SUM CSi: 0\n"+
+        		"n: 1\n"+
+        		"SUM CSi: 1\n"+
         		"-----REACCION----- \n"+
         		"**Numero de solicitudes recibidas**"+
-        		"MN: 0\n"+
+        		"MN:" +contServicios+"\n"+
         		"**Complejidad de operaciones del agente**"+
         		"SUM Ci: ERROR\n"+
         		"n: "+objetivoAlcanzado+"\n");

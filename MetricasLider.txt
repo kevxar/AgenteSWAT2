@@ -1,0 +1,65 @@
+-------------------- 
+Nombre Agente: Baldo
+------------------------ 
+--->HABILIDAD-SOCIAL<---
+------------------------ 
+-----COMUNICACION----- 
+**Respuestas por mensaje** 
+SMi: 0
+n: 30
+**Tamanio promedio de mensajes** 
+n: 30
+sumatoria hasta n de MBi:323
+**Numero de mensajes recibidos** 
+IM: 30
+**Numero de mensajes enviados** 
+OM: 30
+-----COOPERACION----- 
+**Solicitudes de servicio rechazadas por el agente**SA: 0
+SR: 0 
+**Numero de servicios ofrecidos por el agente**SA: 0
+-----NEGOCIACION----- 
+**Objetivos alcanzados por el agente**G: 1
+**Mensajes por un servicio solicitado**MS: 0
+**Mensajes enviados para solicitar un servicio**MR: 1
+
+----------------- 
+--->AUTONOMIA<---
+----------------- 
+-----AUTO-CONTROL----- 
+**Complejidad estructural** 
+SUM CP: 1
+**tamaño del sistema interno** 
+SUM VBi: Cantidad FIJA 
+**complejidad de comportamiento** 
+SUM CSi: 0
+-----INDEPENDENCIA FUNCIONAL----- 
+**Fraccion de mensajes de tipo ejecutivo** 
+MR: 30
+ME: 0
+-----CAPACIDAD DE EVOLUCION----- 
+**Capacidad para actualizar el estado** 
+SUM Sij: 4
+**Frecuencia de actualizacion del estado** 
+SUM Vij: 18
+
+-------------------- 
+--->PROACTIVIDAD<---
+-------------------- 
+-----INICIATIVA----- 
+**Numero de roles**NR: 1
+**Objetivos alcanzados por el agente**G: 1
+**Mensajes para alcanzar los objetivos**EM: 15
+TM: 60
+n: 1
+-----INTERACCION----- 
+**Servicios por agente**S: 0
+**Numero de tipos de mensajes**IM: 2
+OM: 16
+**Numero promedio de servicios requeridos por un agente**n:0
+SUM CSi: 1
+-----REACCION----- 
+**Numero de solicitudes recibidas**MN: 0
+**Complejidad de operaciones del agente**SUM Ci: Calcular a Mano
+n: 1
+

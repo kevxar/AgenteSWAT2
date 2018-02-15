@@ -1,5 +1,5 @@
 ---------- 
-Nombre Agente:unidad2
+Nombre Agente:unidad3
  
 *-HABILIDAD SOCIAL-* 
 -COMUNICACION- 
@@ -59,14 +59,15 @@ Sumatoria de VCij:0
 TM: 5
 n: 1
 -----INTERACCION----- 
-**Servicios por agente**S: 0
-**Numero de tipos de mensajes**IM: 0
-OM: 0
-**Numero promedio de servicios requeridos por un agente**n: 0
-SUM CSi: 0
+**Servicios por agente**S: 1
+**Numero de tipos de mensajes**IM: 3
+OM: 1
+**Numero promedio de servicios requeridos por un agente**n: 1
+SUM CSi: 1
 -----REACCION----- 
-**Numero de solicitudes recibidas**MN: 0
+**Numero de solicitudes recibidas**MN:1
 **Complejidad de operaciones del agente**SUM Ci: ERROR
 n: 0
+
 
 

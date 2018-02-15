@@ -1,3 +1,7 @@
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
 import javax.swing.JOptionPane;
 import jade.core.AID;
 import jade.core.Agent;
@@ -286,23 +290,22 @@ public class AgenteLider extends Agent {
 	 * Se modifica para enviar un mensaje de despedida.
 	 */
 	protected void takeDown() {
-
 		System.out.println(getAID().getLocalName() +" termina sus servicios, equipo SWAT se despide.");
-		System.out.println("Suma de los mensajes en bytes: "+sumEnv+"bytes por el Lider");
-		System.out.println("Cantidad de mensajes enviados por el Lider: "+contEnv);
-		System.out.println("Cantidad de estados actualizados: "+contCamb);
-		System.out.println("Cantidad de referencias usados LIDER: "+contRef);
-		
-		long MEGABYTE = 1024L * 1024L;
-		// Get the Java runtime
-        Runtime runtime = Runtime.getRuntime();
-        // Run the garbage collector
-        runtime.gc();
-        // Calculate the used memory
-        long memory = runtime.totalMemory() - runtime.freeMemory();
-        System.out.println("Used memory is Mbytes: " + memory/MEGABYTE);
-        
-        System.out.println("-------------------- \n"+
+		crearMetricas();
+	}
+	
+	private void crearMetricas() {
+		PrintWriter writer = null;
+		try {
+			writer = new PrintWriter("MetricasLider.txt", "UTF-8");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		writer.println("-------------------- \n"+
         		"Nombre Agente: Baldo\n"+
         		"------------------------ \n"+
         		"--->HABILIDAD-SOCIAL<---\n"+
@@ -330,15 +333,15 @@ public class AgenteLider extends Agent {
         		"**Mensajes por un servicio solicitado**"+
         		"MS: 0\n"+
         		"**Mensajes enviados para solicitar un servicio**"+
-        		"MR: "+solicitarServicio+"\n"+
-        		"----------------- \n"+
+        		"MR: "+solicitarServicio+"\n");
+		writer.println("----------------- \n"+
         		"--->AUTONOMIA<---\n"+
         		"----------------- \n"+
         		"-----AUTO-CONTROL----- \n"+
 				"**Complejidad estructural** \n"+
 				"SUM CP: "+totalPunteroReferencia+"\n"+
 				"**tamaño del sistema interno** \n"+
-				"SUM VBi: ERROR\n"+
+				"SUM VBi: Cantidad FIJA \n"+
 				"**complejidad de comportamiento** \n"+
 				"SUM CSi: 0\n"+
 				"-----INDEPENDENCIA FUNCIONAL----- \n"+
@@ -349,15 +352,15 @@ public class AgenteLider extends Agent {
 				"**Capacidad para actualizar el estado** \n"+
 				"SUM Sij: "+contadorActualizadas+"\n"+
 				"**Frecuencia de actualizacion del estado** \n"+
-				"SUM Vij: "+contCamb+"\n"+
-				"-------------------- \n"+
+				"SUM Vij: "+contCamb+"\n");
+		writer.println("-------------------- \n"+
         		"--->PROACTIVIDAD<---\n"+
 				"-------------------- \n"+
         		"-----INICIATIVA----- \n"+
         		"**Numero de roles**"+
         		"NR: 1\n"+
         		"**Objetivos alcanzados por el agente**"+
-        		"G: "+objetivoAlcanzado+"\n"+
+        		"G: 1\n"+
         		"**Mensajes para alcanzar los objetivos**"+
         		"EM: "+contMensajesEjecutivoEnviados+"\n"+
         		"TM: "+(contEnv+contMensajesRecibidos)+"\n"+
@@ -369,15 +372,14 @@ public class AgenteLider extends Agent {
         		"IM: "+contTiposMensajesRecibidos+"\n"+
         		"OM: "+contTiposMensajesEnviados+"\n"+
         		"**Numero promedio de servicios requeridos por un agente**"+
-        		"n: 0\n"+
-        		"SUM CSi: 0\n"+
+        		"n:"+0+"\n"+
+        		"SUM CSi: 1\n"+
         		"-----REACCION----- \n"+
         		"**Numero de solicitudes recibidas**"+
         		"MN: 0\n"+
         		"**Complejidad de operaciones del agente**"+
-        		"SUM Ci: ERROR\n"+
-        		"n: "+objetivoAlcanzado+"\n"+
-        		"");
+        		"SUM Ci: Calcular a Mano\n"+
+        		"n: "+objetivoAlcanzado+"\n");
+		writer.close();
 	}
-
 }
