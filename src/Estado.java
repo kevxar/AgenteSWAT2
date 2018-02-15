@@ -1,0 +1,9 @@
+
+public enum Estado {
+	LIBRE,
+	OCUPADA,
+	DESPEJADA,
+	ENCONTRADA,
+	DESACTIVADA
+	
+}

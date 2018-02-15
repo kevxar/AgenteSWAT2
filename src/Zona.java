@@ -9,8 +9,8 @@ public class Zona {
 		// Variable que identifica la zona
 		private String identificador;
 		
-		//Variable que guarda el estado de la zona, los valores pueden ser disponible, ocupado,despejado y encontrado.
-		private String estado;
+		//Variable que guarda el estado de la zona, los valores pueden ser libre, ocupado,despejado y encontrado.
+		private Estado estado;
 		
 		// Posiciones inicial y final de las filas
 		private int xInicial;
@@ -28,7 +28,7 @@ public class Zona {
 		 * @param yInicial columna inicial
 		 * @param yFinal fila final
 		 */
-		public Zona(String identificador,int xInicial,int xFinal, int yInicial, int yFinal,String estado) {
+		public Zona(String identificador,int xInicial,int xFinal, int yInicial, int yFinal,Estado estado) {
 			this.identificador = identificador;
 			this.xInicial = xInicial;
 			this.xFinal = xFinal;
@@ -84,7 +84,7 @@ public class Zona {
 		 * Metodo que devuelve el estado de la zona
 		 * @return
 		 */
-		public String getEstado() {
+		public Estado getEstado() {
 			return this.estado;
 		}
 
@@ -92,7 +92,7 @@ public class Zona {
 		 * Metodo que permite cambiar el estado de la zona.
 		 * @param estado
 		 */
-		public void setEstado(String estado) {
+		public void setEstado(Estado estado) {
 			this.estado = estado;
 		}
 		

@@ -27,7 +27,7 @@ public class AgenteUnidad extends Agent {
 	private String nombre;
 
 	// Variable estado que contiene los 3 estados del agente "despejado", "encontrado" y "desactivado".
-	private String estado;
+	private Estado estado;
 
 	// Variable coordenadas, que guarda el nombre, el punto inicial, y final de las zonas a revisar.
 	private String coordenadas;
@@ -169,7 +169,7 @@ public class AgenteUnidad extends Agent {
 			int yFinal = Integer.parseInt(partes[4]);
 
 			// Se inicia el estado como despejado.
-			estado = "despejado,"+zona;
+			estado = Estado.DESPEJADA;
 			contCamb++;
 			for(int i = xInicial; i < xFinal ; i++) {
 				for(int j = yInicial; j < yFinal; j++) {
@@ -179,7 +179,7 @@ public class AgenteUnidad extends Agent {
 					if(!Mision.getInstancia().getEstado()) {
 						contRef++;
 						if(Mision.getInstancia().getMapa().getMapa()[j][i] == 1) {
-							estado = "encontrado,"+zona;
+							estado = Estado.ENCONTRADA;
 							contCamb++;
 							Mision.getInstancia().setEstado(true);
 							contRef++;
@@ -193,16 +193,16 @@ public class AgenteUnidad extends Agent {
 					}
 					
 				}
-				if(estado.equalsIgnoreCase("encontrado"+zona)) {
+				if(estado.equals(Estado.ENCONTRADA)) {
 					break;
 				}
 			}
 			// En cado de encontrar o no encontrar la bomba, se cambiara el estado de la zona misma a "encontrado" o "despejado".
-			if(estado.equalsIgnoreCase("encontrado"+zona)) {
+			if(estado.equals(Estado.ENCONTRADA)) {
 				for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
 					contRef+=2;
 					if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador().equalsIgnoreCase(zona)){
-						Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("encontrado");
+						Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado(Estado.ENCONTRADA);
 						contRef++;
 					}
 				}
@@ -210,7 +210,7 @@ public class AgenteUnidad extends Agent {
 				for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
 					contRef+=2;
 					if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador().equalsIgnoreCase(zona)){
-						Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("despejado");
+						Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado(Estado.DESPEJADA);
 						contRef++;
 					}
 				}
@@ -272,8 +272,8 @@ public class AgenteUnidad extends Agent {
 			for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
 				contRef+=2;
 				// Si la zona de la lista esta libre se procede a recorrer la zona.
-				if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getEstado().equalsIgnoreCase("libre")) {
-					Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado("ocupado");
+				if(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getEstado().equals(Estado.LIBRE)) {
+					Mision.getInstancia().getMapa().getListaCoordenadas()[i].setEstado(Estado.OCUPADA);
 					contRef+=2;
 					coordenadas = Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXInicial()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYInicial()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXFinal()+","+Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYFinal();
 					contCamb++;
@@ -375,7 +375,7 @@ public class AgenteUnidad extends Agent {
 			}
 			//Envia un mensaje al lider.
 			ACLMessage req = new ACLMessage(ACLMessage.INFORM);
-			req.setContent("desactivado");
+			req.setContent(Estado.DESACTIVADA.toString());
 			sumEnv+=req.getContent().length();
 			contEnv++;
 			req.addReceiver(new AID ("Baldo",AID.ISLOCALNAME));

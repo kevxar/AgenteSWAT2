@@ -1,5 +1,5 @@
 ---------- 
-Nombre Agente:unidad2
+Nombre Agente:unidad7
  
 *-HABILIDAD SOCIAL-* 
 -COMUNICACION- 
@@ -41,11 +41,11 @@ Sum CSi:INDEPENDENCIA FUNCIONAL
 MR:3
 ME:1CAPACIDAD DE EVOLUCION 
 **Capacidad para actualizar el estado** 
-n:5
+n:9
 m:3
 Sumatoria de Sij:0
 **Frecuencia de actualizacion del estado** 
-n:5
+n:9
 m:3
 Sumatoria de VCij:0
 
