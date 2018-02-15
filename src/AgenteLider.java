@@ -149,6 +149,7 @@ public class AgenteLider extends Agent {
 					req.setConversationId("iniciacion");
 					req.setReplyWith("si");
 					myAgent.send(req);
+					contadorMensajesServicios++;
 					respondio = true;
 				}
 				//Si se recibio respuesta, se suma el contador de unidades instanciadas.
@@ -378,7 +379,7 @@ public class AgenteLider extends Agent {
         		"OM: "+contTiposMensajesEnviados+"\n"+
         		"**Numero promedio de servicios requeridos por un agente**"+
         		"n:"+0+"\n"+
-        		"SUM CSi: 1\n"+
+        		"SUM CSi: 0\n"+
         		"-----REACCION----- \n"+
         		"**Numero de solicitudes recibidas**"+
         		"MN: 0\n"+

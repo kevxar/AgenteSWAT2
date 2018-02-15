@@ -402,7 +402,7 @@ public class AgenteUnidad extends Agent {
 	private void crearMetricas() {
 		PrintWriter writer = null;
 		try {
-			writer = new PrintWriter("MetricasUnidad"+Mision.getInstancia().getMapa().getColumnas()+
+			writer = new PrintWriter("Metricas " +nombre+ "-" +Mision.getInstancia().getMapa().getColumnas()+
 					Mision.getInstancia().getMapa().getFilas()+
 					Mision.getInstancia().getMapa().getListaCoordenadas().length+".txt", "UTF-8");
 		} catch (FileNotFoundException e) {
@@ -428,7 +428,7 @@ public class AgenteUnidad extends Agent {
 				"**Numero de mensajes recibidos** \n"+
 				"IM:"+contMensajesRecibidos+"\n"+
 				"**Numero de mensajes enviados** \n"+
-				"OM:"+ (contEnv/contadorRespuestaMensajes)+"\n"+
+				"OM:"+ (contEnv-contadorRespuestaMensajes)+"\n"+
 				"COOPERACION \n"+
 				"**Solicitudes de servicio rechazadas por el agente** \n"+
 				"SA:"+contadorMensajesServicios+"\n"+
@@ -447,9 +447,9 @@ public class AgenteUnidad extends Agent {
 				"AUTOCONTROL \n"+
 				"**Complejidad estructural** \n"+
 				"n: 1"+"\n"+
-				"CP: 3"+
+				"CP: 3\n"+
 				"**Tamanio del estado interno** \n"+
-				"n:"+"\n"+
+				"n:"+contVariables+"\n"+
 				//Modificar 
 				"Sum VBi:"+"\n"+
 				"**Complejidad de comportamiento** \n"+
