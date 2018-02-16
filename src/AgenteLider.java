@@ -14,6 +14,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+
 /**
  * @author Baldo Morales
  * @author Kevin Araya
@@ -21,8 +22,6 @@ import jade.lang.acl.MessageTemplate;
  */
 
 public class AgenteLider extends Agent {
-	// Mision para el equipo, contiene mapa y objetivo
-	private Mision mision;
 	// Arreglo de agentesID que guardara las unidades disponibles.
 	private AID[] listaUnidades;
 	// Arreglo de zonas
@@ -65,7 +64,10 @@ public class AgenteLider extends Agent {
 		contTiposMensajesEnviados=0;
 		contTiposMensajesRecibidos=0;
 		System.out.println("Hola, soy el lider");
+		
+
 		addBehaviour(new ObtenerMision());
+	
 	}
 
 	/**
@@ -76,24 +78,23 @@ public class AgenteLider extends Agent {
 	private class ObtenerMision extends OneShotBehaviour{
 
 		public void action() {
-			// Se obtiene la mision por la instancia
-			mision = Mision.getInstancia();	
+			
 			contadorActualizadas++;
 			totalPunteroReferencia++;
-			listaCoordenadas = mision.getMapa().getListaCoordenadas();
+			listaCoordenadas = Mision.getInstancia().getMapa().getListaCoordenadas();
 			contCamb++;
 			contadorActualizadas++;
 			System.out.println("He obtenido la misión!");
-			JOptionPane.showMessageDialog(null,"Mision: "+mision.getobjetivo().getTipo());
-			JOptionPane.showMessageDialog(null,"Descripcion: "+mision.getobjetivo().getDescripcion());
+			JOptionPane.showMessageDialog(null,"Mision: "+Mision.getInstancia().getobjetivo().getTipo());
+			JOptionPane.showMessageDialog(null,"Descripcion: "+Mision.getInstancia().getobjetivo().getDescripcion());
 			System.out.println("El lider ha dividido el mapa en las siguientes coordenadas: ");
 			contRef+=4;
-			for(int i=0;i<mision.getMapa().getListaCoordenadas().length;i++) {
-				System.out.print(mision.getMapa().getListaCoordenadas()[i].getIdentificador()
-						+ ": x inicial: "+ (mision.getMapa().getListaCoordenadas()[i].getZonaXInicial()+1)+"  ");
-				System.out.print(" x final: "+ mision.getMapa().getListaCoordenadas()[i].getZonaXFinal()+"  ");
-				System.out.print(" y inicial: "+ (mision.getMapa().getListaCoordenadas()[i].getZonaYInicial()+1)+"  ");
-				System.out.print(" y final: "+ mision.getMapa().getListaCoordenadas()[i].getZonaYFinal()+"  ");
+			for(int i=0;i<Mision.getInstancia().getMapa().getListaCoordenadas().length;i++) {
+				System.out.print(Mision.getInstancia().getMapa().getListaCoordenadas()[i].getIdentificador()
+						+ ": x inicial: "+ (Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXInicial()+1)+"  ");
+				System.out.print(" x final: "+ Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaXFinal()+"  ");
+				System.out.print(" y inicial: "+ (Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYInicial()+1)+"  ");
+				System.out.print(" y final: "+ Mision.getInstancia().getMapa().getListaCoordenadas()[i].getZonaYFinal()+"  ");
 				System.out.println("");
 				contRef+=6;
 			}
@@ -292,6 +293,7 @@ public class AgenteLider extends Agent {
 	 */
 	protected void takeDown() {
 		System.out.println(getAID().getLocalName() +" termina sus servicios, equipo SWAT se despide.");
+		
 		crearMetricas();
 	}
 	
