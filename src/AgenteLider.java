@@ -49,6 +49,7 @@ public class AgenteLider extends Agent {
 	 * Setup que inicializa el agente Lider.
 	 */
 	protected void setup() {
+		cantidadUnidad=0;
 		contadorRespuestaMensajes= 0;
 		contMensajesRecibidos=0;
 		contadorMensajesServicios=0;
@@ -81,7 +82,7 @@ public class AgenteLider extends Agent {
 			contadorActualizadas++;
 			totalPunteroReferencia++;
 			listaCoordenadas = mision.getMapa().getListaCoordenadas();
-			contCamb++;
+			contCamb+=2;
 			contadorActualizadas++;
 			System.out.println("He obtenido la misión!");
 			JOptionPane.showMessageDialog(null,"Mision: "+mision.getobjetivo().getTipo());

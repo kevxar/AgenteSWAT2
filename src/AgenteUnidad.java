@@ -79,6 +79,7 @@ public class AgenteUnidad extends Agent {
 		
 		//Se agrega el nombre de la unidad.
 		nombre = this.getLocalName();
+		contCamb++;
 		//Se añade el servicio de disponibilidad de Unidad SWAT
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
@@ -469,7 +470,7 @@ public class AgenteUnidad extends Agent {
 				"**Frecuencia de actualizacion del estado** \n"+
 				"n:"+ cantInstrucciones+ "\n"+
 				"m:"+ contVariables+ "\n"+
-				"Sumatoria de VCij:"+sumVCij+"\n");
+				"Sumatoria de VCij:"+contCamb+"\n");
 		
 		writer.println("-------------------- \n"+
         		"--->PROACTIVIDAD<---\n"+
