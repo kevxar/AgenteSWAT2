@@ -340,7 +340,7 @@ public class AgenteLider extends Agent {
         		"SA: "+contadorMensajesServicios+"\n"+
         		"SR: 0 \n"+
         		"**Numero de servicios ofrecidos por el agente**"+
-        		"SA: 0\n"+
+        		"S: 0\n"+
         		"-----NEGOCIACION----- \n"+
         		"**Objetivos alcanzados por el agente**"+
         		"G: "+objetivoAlcanzado+"\n"+
