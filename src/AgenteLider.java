@@ -82,13 +82,13 @@ public class AgenteLider extends Agent {
 			
 			contadorActualizadas++;
 			totalPunteroReferencia++;
-<<<<<<< HEAD
-			listaCoordenadas = mision.getMapa().getListaCoordenadas();
+
+			listaCoordenadas = Mision.getInstancia().getMapa().getListaCoordenadas();
 			contCamb+=2;
-=======
+
 			listaCoordenadas = Mision.getInstancia().getMapa().getListaCoordenadas();
 			contCamb++;
->>>>>>> 85b695be0a2308b1bc6ea44490fc22f25235923d
+
 			contadorActualizadas++;
 			System.out.println("He obtenido la misión!");
 			JOptionPane.showMessageDialog(null,"Mision: "+Mision.getInstancia().getobjetivo().getTipo());
