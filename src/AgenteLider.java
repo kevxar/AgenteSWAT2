@@ -74,7 +74,6 @@ public class AgenteLider extends Agent {
 	/**
 	 * Metodo que obtiene la mision por parte de Sistema.
 	 * Luego, imprime las coordenadas de cada Zona.
-	 * @param mis
 	 */
 	private class ObtenerMision extends OneShotBehaviour{
 
