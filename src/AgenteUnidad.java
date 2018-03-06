@@ -384,7 +384,7 @@ public class AgenteUnidad extends Agent {
 			req.setContent(Estado.DESACTIVADA.toString());
 			sumEnv+=req.getContent().length();
 			contEnv++;
-			req.addReceiver(new AID ("Baldo",AID.ISLOCALNAME));
+			req.addReceiver(new AID ("Lider",AID.ISLOCALNAME));
 			req.setConversationId("iniciacion");
 			req.setReplyWith("si");
 			myAgent.send(req);

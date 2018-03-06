@@ -316,7 +316,7 @@ public class AgenteLider extends Agent {
 			e.printStackTrace();
 		}
 		writer.println("-------------------- \n"+
-        		"Nombre Agente: Baldo\n"+
+        		"Nombre Agente: Lider\n"+
 				Mision.getInstancia().getMapa().getColumnas()+"x"+
 				Mision.getInstancia().getMapa().getFilas()+"\n"+
 				Mision.getInstancia().getMapa().getListaCoordenadas().length+"\n"+

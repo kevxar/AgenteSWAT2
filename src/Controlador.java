@@ -39,7 +39,7 @@ public class Controlador {
 		AgentContainer ac = jade.core.Runtime.instance().createMainContainer(p);
 		
 	    try {
-	        ac.acceptNewAgent("Baldo", new AgenteLider()).start();
+	        ac.acceptNewAgent("Lider", new AgenteLider()).start();
 
 	    } catch (StaleProxyException e) {
 	        throw new Error(e);
