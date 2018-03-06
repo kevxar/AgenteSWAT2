@@ -274,7 +274,7 @@ public class AgenteLider extends Agent {
 			}
 			
 			else {
-				block();
+				block(); 
 			}
 		}
 		
